@@ -1,9 +1,9 @@
-package br.edu.ifba.inf008.shell;
+package br.edu.ifba.inf008.shell.controllers;
 
 import br.edu.ifba.inf008.App;
 import br.edu.ifba.inf008.interfaces.IPluginController;
 import br.edu.ifba.inf008.interfaces.IPlugin;
-import br.edu.ifba.inf008.interfaces.ICore;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URL;

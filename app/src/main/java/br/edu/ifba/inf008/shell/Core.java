@@ -1,11 +1,17 @@
 package br.edu.ifba.inf008.shell;
 
 import br.edu.ifba.inf008.interfaces.*;
-import javafx.application.Application;
-import javafx.application.Platform;
+import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
+import br.edu.ifba.inf008.shell.controllers.IOController;
+import br.edu.ifba.inf008.shell.controllers.PluginController;
+import br.edu.ifba.inf008.shell.controllers.UIController;
 
 public class Core extends ICore
 {
+    private final IAuthenticationController authenticationController = new AuthenticationController();
+    private final IIOController ioController = new IOController();
+    private final IPluginController pluginController = new PluginController();
+
     private Core() {}
 
     public static boolean init() {
@@ -16,7 +22,6 @@ public class Core extends ICore
 
 	instance = new Core();
         UIController.launch(UIController.class);
-
         return true;
     }
     
@@ -35,8 +40,4 @@ public class Core extends ICore
     public IPluginController getPluginController() {
         return pluginController;
     }
-
-    private final IAuthenticationController authenticationController = new AuthenticationController();
-    private final IIOController ioController = new IOController();
-    private final IPluginController pluginController = new PluginController();
 }

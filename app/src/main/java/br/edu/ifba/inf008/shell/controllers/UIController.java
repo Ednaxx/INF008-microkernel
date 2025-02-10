@@ -1,8 +1,7 @@
-package br.edu.ifba.inf008.shell;
+package br.edu.ifba.inf008.shell.controllers;
 
 import br.edu.ifba.inf008.interfaces.IUIController;
-import br.edu.ifba.inf008.interfaces.ICore;
-import br.edu.ifba.inf008.shell.PluginController;
+import br.edu.ifba.inf008.shell.Core;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -11,7 +10,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.application.Platform;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tab;
 import javafx.geometry.Side;
@@ -21,13 +19,11 @@ import java.util.Objects;
 
 public class UIController extends Application implements IUIController
 {
-    private ICore core;
     private MenuBar menuBar;
     private TabPane tabPane;
     private static UIController uiController;
 
-    public UIController() {
-    }
+    public UIController() {}
 
     @Override
     public void init() {
@@ -47,7 +43,7 @@ public class UIController extends Application implements IUIController
         VBox vBox = new VBox(menuBar);
 
         tabPane = new TabPane();
-        tabPane.setSide(Side.BOTTOM);
+        tabPane.setSide(Side.TOP);
 
         vBox.getChildren().addAll(tabPane);
 
