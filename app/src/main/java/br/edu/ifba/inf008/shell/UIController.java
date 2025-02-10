@@ -17,6 +17,8 @@ import javafx.scene.control.Tab;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 
+import java.util.Objects;
+
 public class UIController extends Application implements IUIController
 {
     private ICore core;
@@ -58,10 +60,9 @@ public class UIController extends Application implements IUIController
     }
 
     public MenuItem createMenuItem(String menuText, String menuItemText) {
-        // Criar o menu caso ele nao exista
         Menu newMenu = null;
         for (Menu menu : menuBar.getMenus()) {
-            if (menu.getText() == menuText) {
+            if (Objects.equals(menu.getText(), menuText)) {
                 newMenu = menu;
                 break;
             }
@@ -71,7 +72,6 @@ public class UIController extends Application implements IUIController
             menuBar.getMenus().add(newMenu);
         }
 
-        // Criar o menu item neste menu
         MenuItem menuItem = new MenuItem(menuItemText);
         newMenu.getItems().add(menuItem);
 

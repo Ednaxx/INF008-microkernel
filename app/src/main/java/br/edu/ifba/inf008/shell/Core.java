@@ -19,20 +19,24 @@ public class Core extends ICore
 
         return true;
     }
+    
     public IUIController getUIController() {
         return UIController.getInstance();
     }
+    
     public IAuthenticationController getAuthenticationController() {
         return authenticationController;
     }
+    
     public IIOController getIOController() {
         return ioController;
     }
+    
     public IPluginController getPluginController() {
         return pluginController;
     }
 
-    private IAuthenticationController authenticationController = new AuthenticationController();
-    private IIOController ioController = new IOController();
-    private IPluginController pluginController = new PluginController();
+    private final IAuthenticationController authenticationController = new AuthenticationController();
+    private final IIOController ioController = new IOController();
+    private final IPluginController pluginController = new PluginController();
 }

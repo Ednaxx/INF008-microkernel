@@ -1,7 +1,6 @@
 package br.edu.ifba.inf008.interfaces;
 
-public abstract class ICore
-{
+public abstract class ICore {
     public static ICore getInstance() {
         return instance;
     }
