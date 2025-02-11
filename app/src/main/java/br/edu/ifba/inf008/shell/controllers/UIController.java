@@ -3,6 +3,8 @@ package br.edu.ifba.inf008.shell.controllers;
 import br.edu.ifba.inf008.interfaces.IUIController;
 import br.edu.ifba.inf008.shell.Core;
 
+import br.edu.ifba.inf008.shell.views.BookView;
+import br.edu.ifba.inf008.shell.views.UserView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
@@ -36,7 +38,7 @@ public class UIController extends Application implements IUIController
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Library Management");
 
         menuBar = new MenuBar();
 
