@@ -1,20 +1,48 @@
 package br.edu.ifba.inf008.shell.models;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class UserModel {
-    private String username;
+    private final UUID id;
+    private String firstName;
+    private String lastName;
+    private String email;
     private String password;
+    private final List<BookModel> borrowedBooks;
 
-    public UserModel(String username, String password) {
-        this.username = username;
+    public UserModel(String firstName, String lastName, String email, String password) {
+        this.id = UUID.randomUUID();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.password = password;
+        this.borrowedBooks = new ArrayList<>();
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -23,5 +51,13 @@ public class UserModel {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public List<BookModel> getBorrowedBooks() {
+        return borrowedBooks;
     }
 }
