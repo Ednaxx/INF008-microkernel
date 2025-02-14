@@ -4,21 +4,25 @@ import br.edu.ifba.inf008.interfaces.*;
 import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
 import br.edu.ifba.inf008.shell.controllers.PluginController;
 import br.edu.ifba.inf008.shell.controllers.UIController;
+import br.edu.ifba.inf008.shell.controllers.UserController;
+import br.edu.ifba.inf008.shell.controllers.BookController;
 
 public class Core extends ICore
 {
-    private final IAuthenticationController authenticationController = new AuthenticationController();
     private final IPluginController pluginController = new PluginController();
+    private final UserController userController = new UserController();
+    private final IAuthenticationController authenticationController = new AuthenticationController(userController);
+    private final BookController bookController = new BookController();
 
     private Core() {}
 
     public static boolean init() {
-	if (instance != null) {
-	    System.out.println("Fatal error: core is already initialized!");
-	    System.exit(-1);
-	}
+        if (instance != null) {
+            System.out.println("Fatal error: core is already initialized!");
+            System.exit(-1);
+        }
 
-	instance = new Core();
+        instance = new Core();
         UIController.launch(UIController.class);
         return true;
     }
@@ -33,5 +37,13 @@ public class Core extends ICore
     
     public IPluginController getPluginController() {
         return pluginController;
+    }
+
+    public UserController getUserController() {
+        return userController;
+    }
+
+    public BookController getBookController() {
+        return bookController;
     }
 }

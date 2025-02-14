@@ -8,18 +8,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class UserController {
-    private static UserController userController;
     private final List<UserModel> users = new ArrayList<>();
 
     public UserController() {}
-
-    public void init() {
-        userController = this;
-    }
-
-    public static UserController getInstance() {
-        return userController;
-    }
 
     public void addUser(UserModel user) {
         users.add(user);
@@ -61,21 +52,20 @@ public class UserController {
         users.removeIf(user -> user.getId().equals(id));
     }
 
-    public void borrowBook(UUID userId, String isbn) {
+    public boolean borrowBook(UUID userId, BookModel book) {
         UserModel user = getById(userId);
-        BookModel book = BookController.getInstance().getByISBN(isbn);
-
-        if (user != null && book != null) {
+        if (user != null) {
             user.getBorrowedBooks().add(book);
+            return true;
         }
+        return false;
     }
 
-    public void returnBook(UUID userId, String isbn) {
+    public boolean returnBook(UUID userId, String isbn) {
         UserModel user = getById(userId);
-        BookModel book = BookController.getInstance().getByISBN(isbn);
-
-        if (user != null && book != null) {
-            user.getBorrowedBooks().remove(book);
+        if (user != null) {
+            return user.getBorrowedBooks().removeIf(book -> book.getIsbn().equals(isbn));
         }
+        return false;
     }
 }

@@ -6,19 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookController {
-    private static BookController bookController;
     private final List<BookModel> books = new ArrayList<>();
 
     public BookController() {}
-
-    public void init() {
-        bookController = this;
-    }
-
-    public static BookController getInstance() {
-        return bookController;
-    }
-
 
     public void addBook(BookModel book) {
         books.add(book);
