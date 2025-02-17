@@ -10,7 +10,7 @@ public class AuthenticationController implements IAuthenticationController {
 
     public AuthenticationController(UserController userController) {
         this.userController = userController;
-        UserModel admin = new UserModel("Admin", "User", "admin@example.com", "admin123", UserRoleEnum.ADMIN);
+        UserModel admin = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
         userController.addUser(admin);
     }
 

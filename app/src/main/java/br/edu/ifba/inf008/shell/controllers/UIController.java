@@ -1,19 +1,14 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.IUIController;
-import br.edu.ifba.inf008.shell.Core;
 import br.edu.ifba.inf008.shell.views.AuthenticationView;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tab;
-import javafx.geometry.Side;
 import javafx.scene.Node;
 
 import java.util.Objects;
@@ -36,9 +31,7 @@ public class UIController extends Application implements IUIController {
 
     @Override
     public void start(Stage primaryStage) {
-        ICore core = Core.getInstance();
-        AuthenticationController authenticationController = (AuthenticationController) core.getAuthenticationController();
-        new AuthenticationView(authenticationController, primaryStage).show();
+        new AuthenticationView(primaryStage).show();
     }
 
     public MenuItem createMenuItem(String menuText, String menuItemText) {
