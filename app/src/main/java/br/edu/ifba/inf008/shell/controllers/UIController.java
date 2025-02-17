@@ -1,10 +1,9 @@
 package br.edu.ifba.inf008.shell.controllers;
 
+import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.IUIController;
 import br.edu.ifba.inf008.shell.Core;
-
-import br.edu.ifba.inf008.shell.views.BookView;
-import br.edu.ifba.inf008.shell.views.UserView;
+import br.edu.ifba.inf008.shell.views.AuthenticationView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
@@ -19,8 +18,7 @@ import javafx.scene.Node;
 
 import java.util.Objects;
 
-public class UIController extends Application implements IUIController
-{
+public class UIController extends Application implements IUIController {
     private MenuBar menuBar;
     private TabPane tabPane;
     private static UIController uiController;
@@ -38,23 +36,9 @@ public class UIController extends Application implements IUIController
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Library Management");
-
-        menuBar = new MenuBar();
-
-        VBox vBox = new VBox(menuBar);
-
-        tabPane = new TabPane();
-        tabPane.setSide(Side.TOP);
-
-        vBox.getChildren().addAll(tabPane);
-
-        Scene scene = new Scene(vBox, 960, 600);
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        Core.getInstance().getPluginController().init();
+        ICore core = Core.getInstance();
+        AuthenticationController authenticationController = (AuthenticationController) core.getAuthenticationController();
+        new AuthenticationView(authenticationController, primaryStage).show();
     }
 
     public MenuItem createMenuItem(String menuText, String menuItemText) {

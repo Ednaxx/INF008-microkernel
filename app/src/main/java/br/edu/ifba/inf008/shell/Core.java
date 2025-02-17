@@ -7,8 +7,7 @@ import br.edu.ifba.inf008.shell.controllers.UIController;
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.controllers.BookController;
 
-public class Core extends ICore
-{
+public class Core extends ICore {
     private final IPluginController pluginController = new PluginController();
     private final UserController userController = new UserController();
     private final IAuthenticationController authenticationController = new AuthenticationController(userController);
@@ -26,15 +25,15 @@ public class Core extends ICore
         UIController.launch(UIController.class);
         return true;
     }
-    
+
     public IUIController getUIController() {
         return UIController.getInstance();
     }
-    
+
     public IAuthenticationController getAuthenticationController() {
         return authenticationController;
     }
-    
+
     public IPluginController getPluginController() {
         return pluginController;
     }
