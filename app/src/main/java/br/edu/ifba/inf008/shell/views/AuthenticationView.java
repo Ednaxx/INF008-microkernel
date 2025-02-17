@@ -56,6 +56,8 @@ public class AuthenticationView {
             }
         });
 
+        loginButton.setDefaultButton(true);
+
         grid.getChildren().addAll(emailLabel, emailInput, passwordLabel, passwordInput, loginButton, errorMessage);
 
         Scene scene = new Scene(grid, 400, 300);

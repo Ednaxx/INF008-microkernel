@@ -18,7 +18,9 @@ public class MainView {
         TabPane tabPane = new TabPane();
 
         Tab bookTab = new Tab("Library", new BookView());
+        bookTab.setClosable(false);
         Tab userTab = new Tab("User", new UserView());
+        userTab.setClosable(false);
 
         tabPane.getTabs().addAll(bookTab, userTab);
 
