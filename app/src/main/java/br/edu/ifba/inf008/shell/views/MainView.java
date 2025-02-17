@@ -16,6 +16,7 @@ public class MainView {
         primaryStage.setTitle("Main Screen");
 
         TabPane tabPane = new TabPane();
+        tabPane.setId("mainTabPane");
 
         Tab bookTab = new Tab("Library", new BookView());
         bookTab.setClosable(false);
@@ -24,7 +25,7 @@ public class MainView {
 
         tabPane.getTabs().addAll(bookTab, userTab);
 
-        Scene scene = new Scene(tabPane, 600, 400);
+        Scene scene = new Scene(tabPane, 1200, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
