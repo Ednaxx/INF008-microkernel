@@ -34,21 +34,24 @@ public class AdminBookView extends VBox {
 
     private TableView<BookModel> createBookTable() {
         TableView<BookModel> table = new TableView<>();
-
+    
         TableColumn<BookModel, String> titleColumn = new TableColumn<>("Title");
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
-
+        titleColumn.setPrefWidth(200);
+    
         TableColumn<BookModel, String> authorColumn = new TableColumn<>("Author");
         authorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
-
+        authorColumn.setPrefWidth(200);
+    
         TableColumn<BookModel, String> releaseDateColumn = new TableColumn<>("Release Date");
         releaseDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReleaseDate().toString()));
-
+        releaseDateColumn.setPrefWidth(150);
+    
         TableColumn<BookModel, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
-
+    
             {
                 editButton.setOnAction(e -> showAddBookPopup(getTableView().getItems().get(getIndex())));
                 deleteButton.setOnAction(e -> {
@@ -60,17 +63,18 @@ public class AdminBookView extends VBox {
                 pane.setSpacing(10);
                 setGraphic(pane);
             }
-
+    
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : getGraphic());
             }
         });
-
+        actionsColumn.setPrefWidth(150);
+    
         table.setItems(books);
         table.getColumns().addAll(titleColumn, authorColumn, releaseDateColumn, actionsColumn);
-
+    
         return table;
     }
 
@@ -116,7 +120,7 @@ public class AdminBookView extends VBox {
 
         popupVBox.getChildren().addAll(new Label("Title:"), titleField, new Label("Author:"), authorField, new Label("Release Date:"), releaseDatePicker, saveButton);
 
-        Scene popupScene = new Scene(popupVBox, 300, 200);
+        Scene popupScene = new Scene(popupVBox, 400, 300);
         popupStage.setScene(popupScene);
         popupStage.showAndWait();
     }

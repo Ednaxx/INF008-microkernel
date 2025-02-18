@@ -68,4 +68,8 @@ public class UserModel {
     public UserRoleEnum getRole() {
         return role;
     }
+
+    public void setRole(UserRoleEnum role) {
+        this.role = role;
+    }
 }

@@ -2,16 +2,16 @@ package br.edu.ifba.inf008.shell.views;
 
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
-import javafx.collections.FXCollections;
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.*;
-import javafx.scene.Scene;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class AdminUserView extends VBox {
     private final UserController userController;
@@ -34,21 +34,28 @@ public class AdminUserView extends VBox {
 
     private TableView<UserModel> createUserTable() {
         TableView<UserModel> table = new TableView<>();
-
+    
         TableColumn<UserModel, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
-
+        firstNameColumn.setPrefWidth(150);
+    
         TableColumn<UserModel, String> lastNameColumn = new TableColumn<>("Last Name");
         lastNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
-
+        lastNameColumn.setPrefWidth(150);
+    
         TableColumn<UserModel, String> emailColumn = new TableColumn<>("Email");
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
-
+        emailColumn.setPrefWidth(200);
+    
+        TableColumn<UserModel, String> roleColumn = new TableColumn<>("Role");
+        roleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole().toString()));
+        roleColumn.setPrefWidth(100);
+    
         TableColumn<UserModel, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
-
+    
             {
                 editButton.setOnAction(e -> showAddUserPopup(getTableView().getItems().get(getIndex())));
                 deleteButton.setOnAction(e -> {
@@ -56,21 +63,34 @@ public class AdminUserView extends VBox {
                     userController.deleteUser(user.getId());
                     users.remove(user);
                 });
+            }
+    
+            private void setButtons() {
+                UserModel user = getTableView().getItems().get(getIndex());
+                boolean isDefaultAdmin = user.getRole() == UserRoleEnum.ADMIN && user.getEmail().equals("admin@admin.com");
+                editButton.setDisable(isDefaultAdmin);
+                deleteButton.setDisable(isDefaultAdmin);
+    
                 HBox pane = new HBox(editButton, deleteButton);
                 pane.setSpacing(10);
                 setGraphic(pane);
             }
-
+    
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : getGraphic());
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setButtons();
+                }
             }
         });
-
+        actionsColumn.setPrefWidth(150);
+    
         table.setItems(users);
-        table.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, actionsColumn);
-
+        table.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, roleColumn, actionsColumn);
+    
         return table;
     }
 
@@ -97,15 +117,20 @@ public class AdminUserView extends VBox {
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Password");
 
+        ComboBox<UserRoleEnum> roleComboBox = new ComboBox<>(FXCollections.observableArrayList(UserRoleEnum.values()));
+        roleComboBox.setPromptText("Role");
+        if (user != null) roleComboBox.setValue(user.getRole());
+
         Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> {
             String firstName = firstNameField.getText();
             String lastName = lastNameField.getText();
             String email = emailField.getText();
             String password = passwordField.getText();
+            UserRoleEnum role = roleComboBox.getValue();
 
             if (user == null) {
-                UserModel newUser = new UserModel(firstName, lastName, email, password, UserRoleEnum.CUSTOMER);
+                UserModel newUser = new UserModel(firstName, lastName, email, password, role);
                 userController.addUser(newUser);
                 users.add(newUser);
             } else {
@@ -113,15 +138,16 @@ public class AdminUserView extends VBox {
                 user.setLastName(lastName);
                 user.setEmail(email);
                 user.setPassword(password);
+                user.setRole(role);
                 userController.updateUser(user.getId(), user);
                 users.set(users.indexOf(user), user);
             }
             popupStage.close();
         });
 
-        popupVBox.getChildren().addAll(new Label("First Name:"), firstNameField, new Label("Last Name:"), lastNameField, new Label("Email:"), emailField, new Label("Password:"), passwordField, saveButton);
+        popupVBox.getChildren().addAll(new Label("First Name:"), firstNameField, new Label("Last Name:"), lastNameField, new Label("Email:"), emailField, new Label("Password:"), passwordField, new Label("Role:"), roleComboBox, saveButton);
 
-        Scene popupScene = new Scene(popupVBox, 300, 250);
+        Scene popupScene = new Scene(popupVBox, 400, 500);
         popupStage.setScene(popupScene);
         popupStage.showAndWait();
     }
