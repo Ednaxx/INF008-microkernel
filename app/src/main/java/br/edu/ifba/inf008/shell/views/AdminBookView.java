@@ -37,15 +37,19 @@ public class AdminBookView extends VBox {
     
         TableColumn<BookModel, String> titleColumn = new TableColumn<>("Title");
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
-        titleColumn.setPrefWidth(200);
+        titleColumn.setPrefWidth(250);
     
         TableColumn<BookModel, String> authorColumn = new TableColumn<>("Author");
         authorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
-        authorColumn.setPrefWidth(200);
+        authorColumn.setPrefWidth(250);
+    
+        TableColumn<BookModel, String> isbnColumn = new TableColumn<>("ISBN");
+        isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIsbn()));
+        isbnColumn.setPrefWidth(150);
     
         TableColumn<BookModel, String> releaseDateColumn = new TableColumn<>("Release Date");
         releaseDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReleaseDate().toString()));
-        releaseDateColumn.setPrefWidth(150);
+        releaseDateColumn.setPrefWidth(200);
     
         TableColumn<BookModel, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(col -> new TableCell<>() {
@@ -59,21 +63,24 @@ public class AdminBookView extends VBox {
                     bookController.deleteBook(book.getIsbn());
                     books.remove(book);
                 });
-                HBox pane = new HBox(editButton, deleteButton);
-                pane.setSpacing(10);
-                setGraphic(pane);
             }
     
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : getGraphic());
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox pane = new HBox(editButton, deleteButton);
+                    pane.setSpacing(10);
+                    setGraphic(pane);
+                }
             }
         });
-        actionsColumn.setPrefWidth(150);
+        actionsColumn.setPrefWidth(200);
     
         table.setItems(books);
-        table.getColumns().addAll(titleColumn, authorColumn, releaseDateColumn, actionsColumn);
+        table.getColumns().addAll(titleColumn, authorColumn, isbnColumn, releaseDateColumn, actionsColumn);
     
         return table;
     }
@@ -94,6 +101,10 @@ public class AdminBookView extends VBox {
         authorField.setPromptText("Author");
         if (book != null) authorField.setText(book.getAuthor());
 
+        TextField isbnField = new TextField();
+        isbnField.setPromptText("ISBN");
+        if (book != null) isbnField.setText(book.getIsbn());
+
         DatePicker releaseDatePicker = new DatePicker();
         releaseDatePicker.setPromptText("Release Date");
         if (book != null) releaseDatePicker.setValue(((java.sql.Date) book.getReleaseDate()).toLocalDate());
@@ -102,15 +113,17 @@ public class AdminBookView extends VBox {
         saveButton.setOnAction(e -> {
             String title = titleField.getText();
             String author = authorField.getText();
+            String isbn = isbnField.getText();
             Date releaseDate = java.sql.Date.valueOf(releaseDatePicker.getValue());
 
             if (book == null) {
-                BookModel newBook = new BookModel(title, author, "", null, releaseDate);
+                BookModel newBook = new BookModel(title, author, isbn, null, releaseDate);
                 bookController.addBook(newBook);
                 books.add(newBook);
             } else {
                 book.setTitle(title);
                 book.setAuthor(author);
+                book.setIsbn(isbn);
                 book.setReleaseDate(releaseDate);
                 bookController.updateBook(book.getIsbn(), book);
                 books.set(books.indexOf(book), book);
@@ -118,7 +131,7 @@ public class AdminBookView extends VBox {
             popupStage.close();
         });
 
-        popupVBox.getChildren().addAll(new Label("Title:"), titleField, new Label("Author:"), authorField, new Label("Release Date:"), releaseDatePicker, saveButton);
+        popupVBox.getChildren().addAll(new Label("Title:"), titleField, new Label("Author:"), authorField, new Label("ISBN:"), isbnField, new Label("Release Date:"), releaseDatePicker, saveButton);
 
         Scene popupScene = new Scene(popupVBox, 400, 300);
         popupStage.setScene(popupScene);
