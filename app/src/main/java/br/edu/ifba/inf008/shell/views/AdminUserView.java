@@ -1,5 +1,7 @@
 package br.edu.ifba.inf008.shell.views;
 
+import br.edu.ifba.inf008.shell.Core;
+import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
@@ -14,11 +16,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AdminUserView extends VBox {
+    private final Core core;
     private final UserController userController;
+    private final AuthenticationController authenticationController;
     private ObservableList<UserModel> users;
 
     public AdminUserView(UserController userController) {
         this.userController = userController;
+        this.core = (Core) Core.getInstance();
+        this.authenticationController = (AuthenticationController) core.getAuthenticationController();
         this.users = FXCollections.observableArrayList(userController.getAll());
         initializeView();
     }
@@ -29,33 +35,40 @@ public class AdminUserView extends VBox {
         Button addUserButton = new Button("Add New User");
         addUserButton.setOnAction(e -> showAddUserPopup(null));
 
-        getChildren().addAll(adminLabel, userTable, addUserButton);
+        Button logoutButton = new Button("Logout");
+        logoutButton.setOnAction(e -> {
+            authenticationController.signOut();
+            new AuthenticationView((Stage) getScene().getWindow()).show();
+        });
+
+        HBox buttonBox = new HBox(10, addUserButton, logoutButton);
+        getChildren().addAll(adminLabel, userTable, buttonBox);
     }
 
     private TableView<UserModel> createUserTable() {
         TableView<UserModel> table = new TableView<>();
-    
+
         TableColumn<UserModel, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
         firstNameColumn.setPrefWidth(150);
-    
+
         TableColumn<UserModel, String> lastNameColumn = new TableColumn<>("Last Name");
         lastNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
         lastNameColumn.setPrefWidth(150);
-    
+
         TableColumn<UserModel, String> emailColumn = new TableColumn<>("Email");
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         emailColumn.setPrefWidth(200);
-    
+
         TableColumn<UserModel, String> roleColumn = new TableColumn<>("Role");
         roleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRole().toString()));
         roleColumn.setPrefWidth(100);
-    
+
         TableColumn<UserModel, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
-    
+
             {
                 editButton.setOnAction(e -> showAddUserPopup(getTableView().getItems().get(getIndex())));
                 deleteButton.setOnAction(e -> {
@@ -64,18 +77,18 @@ public class AdminUserView extends VBox {
                     users.remove(user);
                 });
             }
-    
+
             private void setButtons() {
                 UserModel user = getTableView().getItems().get(getIndex());
                 boolean isDefaultAdmin = user.getRole() == UserRoleEnum.ADMIN && user.getEmail().equals("admin@admin.com");
                 editButton.setDisable(isDefaultAdmin);
                 deleteButton.setDisable(isDefaultAdmin);
-    
+
                 HBox pane = new HBox(editButton, deleteButton);
                 pane.setSpacing(10);
                 setGraphic(pane);
             }
-    
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -87,10 +100,10 @@ public class AdminUserView extends VBox {
             }
         });
         actionsColumn.setPrefWidth(150);
-    
+
         table.setItems(users);
         table.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, roleColumn, actionsColumn);
-    
+
         return table;
     }
 

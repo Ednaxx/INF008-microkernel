@@ -12,6 +12,10 @@ public class AuthenticationController implements IAuthenticationController {
         this.userController = userController;
         UserModel admin = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
         userController.addUser(admin);
+
+        // TODO: Remove this
+        UserModel customer = new UserModel("Customer", "User", "customer@customer.com", "customer", UserRoleEnum.CUSTOMER);
+        userController.addUser(customer);
     }
 
     @Override
@@ -28,16 +32,6 @@ public class AuthenticationController implements IAuthenticationController {
     public boolean signOut() {
         if (currentUser != null) {
             currentUser = null;
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean signUp(String firstName, String lastName, String email, String password) {
-        if (userController.getByEmail(email) == null) {
-            UserModel newUser = new UserModel(firstName, lastName, email, password, UserRoleEnum.CUSTOMER);
-            userController.addUser(newUser);
             return true;
         }
         return false;
