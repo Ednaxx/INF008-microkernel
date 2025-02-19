@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookController {
-    private final List<BookModel> books = new ArrayList<>();
+    private List<BookModel> books = new ArrayList<>();
 
     public BookController() {}
 

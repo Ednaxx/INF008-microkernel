@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class UserController {
-    private final List<UserModel> users = new ArrayList<>();
+    private List<UserModel> users = new ArrayList<>();
 
     public UserController() {}
 

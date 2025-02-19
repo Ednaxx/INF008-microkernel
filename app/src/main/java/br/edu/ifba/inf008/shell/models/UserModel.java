@@ -1,12 +1,13 @@
 package br.edu.ifba.inf008.shell.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 
-public class UserModel {
+public class UserModel implements Serializable {
     private final UUID id;
     private String firstName;
     private String lastName;
