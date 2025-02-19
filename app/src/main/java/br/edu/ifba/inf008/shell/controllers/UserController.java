@@ -1,6 +1,5 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
 
 import java.util.ArrayList;
@@ -50,23 +49,5 @@ public class UserController {
 
     public void deleteUser(UUID id) {
         users.removeIf(user -> user.getId().equals(id));
-    }
-
-    public boolean borrowBook(UUID userId, BookModel book) {
-        UserModel user = getById(userId);
-        if (user != null) {
-            if (user.getBorrowedBooks().contains(book)) return false;
-            user.getBorrowedBooks().add(book);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean returnBook(UUID userId, String isbn) {
-        UserModel user = getById(userId);
-        if (user != null) {
-            return user.getBorrowedBooks().removeIf(book -> book.getIsbn().equals(isbn));
-        }
-        return false;
     }
 }

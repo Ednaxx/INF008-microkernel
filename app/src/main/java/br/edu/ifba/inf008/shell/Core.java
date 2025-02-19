@@ -7,6 +7,7 @@ import br.edu.ifba.inf008.shell.controllers.UIController;
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 import br.edu.ifba.inf008.shell.controllers.BookController;
+import br.edu.ifba.inf008.shell.controllers.LoanController;
 import br.edu.ifba.inf008.shell.util.EntitySerializer;
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 
@@ -15,6 +16,7 @@ public class Core extends ICore {
     private final UserController userController = new UserController();
     private final IAuthenticationController authenticationController = new AuthenticationController(userController);
     private final BookController bookController = new BookController();
+    private final LoanController loanController = new LoanController();
 
     private UserModel admin;
     private UserModel customer;
@@ -27,6 +29,7 @@ public class Core extends ICore {
     private void loadData() {
         userController.getAll().addAll(EntitySerializer.deserializeUsers());
         bookController.getAll().addAll(EntitySerializer.deserializeBooks());
+        loanController.getAll().addAll(EntitySerializer.deserializeLoans());
 
         admin = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
         customer = new UserModel("Customer", "User", "customer@customer.com", "customer", UserRoleEnum.CUSTOMER);
@@ -40,6 +43,7 @@ public class Core extends ICore {
 
         EntitySerializer.serializeUsers(userController.getAll());
         EntitySerializer.serializeBooks(bookController.getAll());
+        EntitySerializer.serializeLoans(loanController.getAll());
     }
 
     public static boolean init() {
@@ -71,5 +75,8 @@ public class Core extends ICore {
 
     public BookController getBookController() {
         return bookController;
+    }
+    public LoanController getLoanController() {
+        return loanController;
     }
 }

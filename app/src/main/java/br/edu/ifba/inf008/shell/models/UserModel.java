@@ -1,8 +1,6 @@
 package br.edu.ifba.inf008.shell.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
@@ -14,7 +12,6 @@ public class UserModel implements Serializable {
     private String email;
     private String password;
     private UserRoleEnum role;
-    private final List<BookModel> borrowedBooks;
 
     public UserModel(String firstName, String lastName, String email, String password, UserRoleEnum role) {
         this.id = UUID.randomUUID();
@@ -23,7 +20,6 @@ public class UserModel implements Serializable {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.borrowedBooks = new ArrayList<>();
     }
 
     public String getFirstName() {
@@ -60,10 +56,6 @@ public class UserModel implements Serializable {
 
     public UUID getId() {
         return id;
-    }
-
-    public List<BookModel> getBorrowedBooks() {
-        return borrowedBooks;
     }
 
     public UserRoleEnum getRole() {
