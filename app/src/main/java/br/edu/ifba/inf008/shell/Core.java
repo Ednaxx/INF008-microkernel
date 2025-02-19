@@ -19,7 +19,6 @@ public class Core extends ICore {
     private final LoanController loanController = new LoanController();
 
     private UserModel admin;
-    private UserModel customer;
 
     private Core() {
         loadData();
@@ -32,14 +31,11 @@ public class Core extends ICore {
         loanController.getAll().addAll(EntitySerializer.deserializeLoans());
 
         admin = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
-        customer = new UserModel("Customer", "User", "customer@customer.com", "customer", UserRoleEnum.CUSTOMER);
         userController.addUser(admin);
-        userController.addUser(customer);
     }
 
     private void saveData() {
         userController.deleteUser(admin.getId());
-        userController.deleteUser(customer.getId());
 
         EntitySerializer.serializeUsers(userController.getAll());
         EntitySerializer.serializeBooks(bookController.getAll());
