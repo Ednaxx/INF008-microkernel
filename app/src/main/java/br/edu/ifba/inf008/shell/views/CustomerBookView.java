@@ -41,6 +41,11 @@ public class CustomerBookView extends VBox {
         getChildren().addAll(customerLabel, new Label("All Books:"), allBooksTable, new Label("Borrowed Books:"), borrowedBooksTable);
     }
 
+    private boolean isBookBorrowed(BookModel book) {
+        return borrowedBooks.stream()
+                .anyMatch(borrowedBook -> borrowedBook.getIsbn().equals(book.getIsbn()));
+    }
+
     private TableView<BookModel> createAllBooksTable() {
         TableView<BookModel> table = new TableView<>(allBooks);
 
@@ -57,7 +62,7 @@ public class CustomerBookView extends VBox {
             {
                 borrowButton.setOnAction(e -> {
                     BookModel book = getTableView().getItems().get(getIndex());
-                    if (!borrowedBooks.contains(book) && userController.borrowBook(currentUser.getId(), book)) {
+                    if (!isBookBorrowed(book) && userController.borrowBook(currentUser.getId(), book)) {
                         borrowedBooks.add(book);
                         allBooksTable.refresh();
                     }
@@ -71,7 +76,7 @@ public class CustomerBookView extends VBox {
                     setGraphic(null);
                 } else {
                     BookModel book = getTableView().getItems().get(getIndex());
-                    borrowButton.setDisable(borrowedBooks.contains(book));
+                    borrowButton.setDisable(isBookBorrowed(book));
                     setGraphic(borrowButton);
                 }
             }

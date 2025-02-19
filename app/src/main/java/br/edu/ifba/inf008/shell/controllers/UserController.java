@@ -55,6 +55,7 @@ public class UserController {
     public boolean borrowBook(UUID userId, BookModel book) {
         UserModel user = getById(userId);
         if (user != null) {
+            if (user.getBorrowedBooks().contains(book)) return false;
             user.getBorrowedBooks().add(book);
             return true;
         }
