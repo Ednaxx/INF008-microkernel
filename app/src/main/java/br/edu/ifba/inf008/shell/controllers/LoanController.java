@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class LoanController {
+    private static final int MAX_BOOKS_PER_USER = 5;
     private List<LoanModel> loans = new ArrayList<>();
 
     public LoanController() {}
@@ -19,9 +20,9 @@ public class LoanController {
     }
 
     public LoanModel borrowBook(UserModel user, BookModel book) {
-        if (isBookBorrowed(book)) {
-            return null;
-        }
+        if (isBookBorrowed(book)) return null;
+        
+        if (getUserBorrowedBooksCount(user) >= MAX_BOOKS_PER_USER) return null;
         
         LoanModel loan = new LoanModel(user, book);
         loans.add(loan);
@@ -37,6 +38,12 @@ public class LoanController {
                 .anyMatch(loan -> loan.getBook().getIsbn().equals(book.getIsbn()));
     }
 
+    public int getUserBorrowedBooksCount(UserModel user) {
+        return (int) loans.stream()
+                .filter(loan -> loan.getUser().getId().equals(user.getId()))
+                .count();
+    }
+
     public List<BookModel> getBorrowedBooks(UserModel user) {
         return loans.stream()
                 .filter(loan -> loan.getUser().getId().equals(user.getId()))
@@ -49,5 +56,9 @@ public class LoanController {
                 .filter(loan -> loan.getBook().getIsbn().equals(book.getIsbn()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public boolean canUserBorrowMoreBooks(UserModel user) {
+        return getUserBorrowedBooksCount(user) < MAX_BOOKS_PER_USER;
     }
 }

@@ -1,10 +1,14 @@
 package br.edu.ifba.inf008.shell.views;
 
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+
 import br.edu.ifba.inf008.shell.Core;
 import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
 import br.edu.ifba.inf008.shell.controllers.BookController;
-import br.edu.ifba.inf008.shell.controllers.UserController;
+import br.edu.ifba.inf008.shell.controllers.LoanController;
 import br.edu.ifba.inf008.shell.models.BookModel;
+import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +19,7 @@ import javafx.scene.layout.VBox;
 public class CustomerBookView extends VBox {
     private final Core core;
     private final BookController bookController;
-    private final UserController userController;
+    private final LoanController loanController;
     private final AuthenticationController authenticationController;
     private final UserModel currentUser;
     private final ObservableList<BookModel> allBooks;
@@ -25,11 +29,11 @@ public class CustomerBookView extends VBox {
     public CustomerBookView() {
         this.core = (Core) Core.getInstance();
         this.bookController = core.getBookController();
-        this.userController = core.getUserController();
+        this.loanController = core.getLoanController();
         this.authenticationController = (AuthenticationController) core.getAuthenticationController();
         this.currentUser = this.authenticationController.getCurrentUser();
         this.allBooks = FXCollections.observableArrayList(bookController.getAll());
-        this.borrowedBooks = FXCollections.observableArrayList(currentUser.getBorrowedBooks());
+        this.borrowedBooks = FXCollections.observableArrayList(loanController.getBorrowedBooks(currentUser));
         initializeView();
     }
 
@@ -38,22 +42,25 @@ public class CustomerBookView extends VBox {
         allBooksTable = createAllBooksTable();
         TableView<BookModel> borrowedBooksTable = createBorrowedBooksTable();
 
-        getChildren().addAll(customerLabel, new Label("All Books:"), allBooksTable, new Label("Borrowed Books:"), borrowedBooksTable);
+        getChildren().addAll(customerLabel, 
+            new Label("All Books:"), allBooksTable, 
+            new Label("Borrowed Books:"), borrowedBooksTable);
     }
 
     private boolean isBookBorrowed(BookModel book) {
-        return borrowedBooks.stream()
-                .anyMatch(borrowedBook -> borrowedBook.getIsbn().equals(book.getIsbn()));
+        return loanController.isBookBorrowed(book);
     }
 
     private TableView<BookModel> createAllBooksTable() {
         TableView<BookModel> table = new TableView<>(allBooks);
 
         TableColumn<BookModel, String> titleColumn = new TableColumn<>("Title");
-        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        titleColumn.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getTitle()));
 
         TableColumn<BookModel, String> authorColumn = new TableColumn<>("Author");
-        authorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
+        authorColumn.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getAuthor()));
 
         TableColumn<BookModel, Void> borrowColumn = new TableColumn<>("Borrow");
         borrowColumn.setCellFactory(col -> new TableCell<>() {
@@ -62,9 +69,18 @@ public class CustomerBookView extends VBox {
             {
                 borrowButton.setOnAction(e -> {
                     BookModel book = getTableView().getItems().get(getIndex());
-                    if (!isBookBorrowed(book) && userController.borrowBook(currentUser.getId(), book)) {
+                    LoanModel loan = loanController.borrowBook(currentUser, book);
+                    if (loan != null) {
                         borrowedBooks.add(book);
                         allBooksTable.refresh();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("Cannot Borrow Book");
+                        alert.setHeaderText(null);
+                        alert.setContentText(loanController.canUserBorrowMoreBooks(currentUser) ? 
+                            "This book is already borrowed." : 
+                            "You have reached the maximum number of books you can borrow.");
+                        alert.showAndWait();
                     }
                 });
             }
@@ -76,7 +92,8 @@ public class CustomerBookView extends VBox {
                     setGraphic(null);
                 } else {
                     BookModel book = getTableView().getItems().get(getIndex());
-                    borrowButton.setDisable(isBookBorrowed(book));
+                    borrowButton.setDisable(isBookBorrowed(book) || 
+                        !loanController.canUserBorrowMoreBooks(currentUser));
                     setGraphic(borrowButton);
                 }
             }
@@ -90,10 +107,25 @@ public class CustomerBookView extends VBox {
         TableView<BookModel> table = new TableView<>(borrowedBooks);
 
         TableColumn<BookModel, String> titleColumn = new TableColumn<>("Title");
-        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        titleColumn.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getTitle()));
 
         TableColumn<BookModel, String> authorColumn = new TableColumn<>("Author");
-        authorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
+        authorColumn.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getAuthor()));
+
+        TableColumn<BookModel, String> borrowDateColumn = new TableColumn<>("Borrowed Date");
+        borrowDateColumn.setPrefWidth(150);
+        borrowDateColumn.setCellValueFactory(cellData -> {
+            LoanModel loan = loanController.getActiveLoan(cellData.getValue());
+            if (loan == null) return new SimpleStringProperty("");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return new SimpleStringProperty(
+                loan.getBorrowingDate()
+                .toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDate().format(formatter)
+            );
+        });
 
         TableColumn<BookModel, Void> returnColumn = new TableColumn<>("Return");
         returnColumn.setCellFactory(col -> new TableCell<>() {
@@ -102,7 +134,8 @@ public class CustomerBookView extends VBox {
             {
                 returnButton.setOnAction(e -> {
                     BookModel book = getTableView().getItems().get(getIndex());
-                    if (userController.returnBook(currentUser.getId(), book.getIsbn())) {
+                    LoanModel loan = loanController.getActiveLoan(book);
+                    if (loan != null && loanController.returnBook(loan.getId())) {
                         borrowedBooks.remove(book);
                         allBooksTable.refresh();
                     }
@@ -120,7 +153,7 @@ public class CustomerBookView extends VBox {
             }
         });
 
-        table.getColumns().addAll(titleColumn, authorColumn, returnColumn);
+        table.getColumns().addAll(titleColumn, authorColumn, borrowDateColumn, returnColumn);
         return table;
     }
 }
