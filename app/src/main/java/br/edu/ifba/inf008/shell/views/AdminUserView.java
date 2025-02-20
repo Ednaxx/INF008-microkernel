@@ -1,9 +1,11 @@
 package br.edu.ifba.inf008.shell.views;
 
-import br.edu.ifba.inf008.shell.Core;
-import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
-import br.edu.ifba.inf008.shell.controllers.UserController;
+import java.util.Collections;
+import br.edu.ifba.inf008.interfaces.ICore;
+import br.edu.ifba.inf008.interfaces.IUserController;
+import br.edu.ifba.inf008.interfaces.IAuthenticationController;
 import br.edu.ifba.inf008.shell.models.UserModel;
+import br.edu.ifba.inf008.shell.Core;
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,15 +18,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AdminUserView extends VBox {
-    private final Core core;
-    private final UserController userController;
-    private final AuthenticationController authenticationController;
-    private ObservableList<UserModel> users;
+    private final IUserController<UserModel> userController;
+    private final IAuthenticationController<UserModel> authenticationController;
+    private final ObservableList<UserModel> users;
 
-    public AdminUserView(UserController userController) {
-        this.userController = userController;
-        this.core = (Core) Core.getInstance();
-        this.authenticationController = (AuthenticationController) core.getAuthenticationController();
+    public AdminUserView() {
+        ICore core = Core.getInstance();
+        userController = core.getUserController();
+        this.authenticationController = core.getAuthenticationController();
         this.users = FXCollections.observableArrayList(userController.getAll());
         initializeView();
     }
@@ -102,7 +103,7 @@ public class AdminUserView extends VBox {
         actionsColumn.setPrefWidth(150);
 
         table.setItems(users);
-        table.getColumns().addAll(firstNameColumn, lastNameColumn, emailColumn, roleColumn, actionsColumn);
+        Collections.addAll(table.getColumns(), firstNameColumn, lastNameColumn, emailColumn, roleColumn, actionsColumn);
 
         return table;
     }

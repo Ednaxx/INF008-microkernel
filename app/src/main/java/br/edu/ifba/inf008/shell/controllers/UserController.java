@@ -1,13 +1,14 @@
 package br.edu.ifba.inf008.shell.controllers;
 
+import br.edu.ifba.inf008.interfaces.IUserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class UserController {
-    private List<UserModel> users = new ArrayList<>();
+public class UserController implements IUserController<UserModel> {
+    private final List<UserModel> users = new ArrayList<>();
 
     public UserController() {}
 

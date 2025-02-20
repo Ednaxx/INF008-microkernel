@@ -1,7 +1,8 @@
 package br.edu.ifba.inf008.shell.views;
 
 import br.edu.ifba.inf008.shell.Core;
-import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
+import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.shell.models.UserModel;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,13 +13,11 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class AuthenticationView {
-    private final Core core;
-    private final AuthenticationController authenticationController;
+    private final IAuthenticationController<UserModel> authenticationController;
     private final Stage primaryStage;
 
     public AuthenticationView(Stage primaryStage) {
-        this.core = (Core) Core.getInstance();
-        this.authenticationController = (AuthenticationController) core.getAuthenticationController();
+        this.authenticationController = Core.getInstance().getAuthenticationController();
         this.primaryStage = primaryStage;
     }
 

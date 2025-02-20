@@ -4,6 +4,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.Node;
 
 public interface IUIController {
-    public MenuItem createMenuItem(String menuText, String menuItemText);
-    public boolean createTab(String tabText, Node contents);
+    MenuItem createMenuItem(String menuText, String menuItemText);
+    boolean createTab(String tabText, Node contents);
 }

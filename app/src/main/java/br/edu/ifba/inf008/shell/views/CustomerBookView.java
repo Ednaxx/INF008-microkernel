@@ -3,10 +3,12 @@ package br.edu.ifba.inf008.shell.views;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
 
+import java.util.Collections;
+import br.edu.ifba.inf008.interfaces.ICore;
+import br.edu.ifba.inf008.interfaces.IBookController;
+import br.edu.ifba.inf008.interfaces.ILoanController;
+import br.edu.ifba.inf008.interfaces.IAuthenticationController;
 import br.edu.ifba.inf008.shell.Core;
-import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
-import br.edu.ifba.inf008.shell.controllers.BookController;
-import br.edu.ifba.inf008.shell.controllers.LoanController;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
@@ -17,21 +19,18 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 public class CustomerBookView extends VBox {
-    private final Core core;
-    private final BookController bookController;
-    private final LoanController loanController;
-    private final AuthenticationController authenticationController;
+    private final ILoanController<LoanModel, UserModel, BookModel> loanController;
     private final UserModel currentUser;
     private final ObservableList<BookModel> allBooks;
     private final ObservableList<BookModel> borrowedBooks;
     private TableView<BookModel> allBooksTable;
 
     public CustomerBookView() {
-        this.core = (Core) Core.getInstance();
-        this.bookController = core.getBookController();
+        ICore core = Core.getInstance();
+        IBookController<BookModel> bookController = core.getBookController();
         this.loanController = core.getLoanController();
-        this.authenticationController = (AuthenticationController) core.getAuthenticationController();
-        this.currentUser = this.authenticationController.getCurrentUser();
+        IAuthenticationController<UserModel> authenticationController = core.getAuthenticationController();
+        this.currentUser = authenticationController.getCurrentUser();
         this.allBooks = FXCollections.observableArrayList(bookController.getAll());
         this.borrowedBooks = FXCollections.observableArrayList(loanController.getBorrowedBooks(currentUser));
         initializeView();
@@ -99,7 +98,7 @@ public class CustomerBookView extends VBox {
             }
         });
 
-        table.getColumns().addAll(titleColumn, authorColumn, borrowColumn);
+        Collections.addAll(table.getColumns(), titleColumn, authorColumn, borrowColumn);
         return table;
     }
 
@@ -153,7 +152,7 @@ public class CustomerBookView extends VBox {
             }
         });
 
-        table.getColumns().addAll(titleColumn, authorColumn, borrowDateColumn, returnColumn);
+        Collections.addAll(table.getColumns(), titleColumn, authorColumn, borrowDateColumn, returnColumn);
         return table;
     }
 }

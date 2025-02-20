@@ -1,5 +1,6 @@
 package br.edu.ifba.inf008.shell.controllers;
 
+import br.edu.ifba.inf008.interfaces.ILoanController;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
@@ -9,9 +10,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class LoanController {
+public class LoanController implements ILoanController<LoanModel, UserModel, BookModel> {
     private static final int MAX_BOOKS_PER_USER = 5;
-    private List<LoanModel> loans = new ArrayList<>();
+    private final List<LoanModel> loans = new ArrayList<>();
 
     public LoanController() {}
 

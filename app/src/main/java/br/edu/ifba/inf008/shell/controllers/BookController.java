@@ -1,12 +1,13 @@
 package br.edu.ifba.inf008.shell.controllers;
 
+import br.edu.ifba.inf008.interfaces.IBookController;
 import br.edu.ifba.inf008.shell.models.BookModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookController {
-    private List<BookModel> books = new ArrayList<>();
+public class BookController implements IBookController<BookModel> {
+    private final List<BookModel> books = new ArrayList<>();
 
     public BookController() {}
 

@@ -1,20 +1,21 @@
 package br.edu.ifba.inf008.shell.views;
 
+import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.IBookController;
+import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.shell.Core;
-import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
-import br.edu.ifba.inf008.shell.controllers.BookController;
 import br.edu.ifba.inf008.shell.models.UserModel;
+import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 import javafx.scene.layout.VBox;
 
 public class BookView extends VBox {
-    private final Core core;
-    private final AuthenticationController authenticationController;
-    private final BookController bookController;
+    private final IAuthenticationController<UserModel> authenticationController;
+    private final IBookController<BookModel> bookController;
 
     public BookView() {
-        this.core = (Core) Core.getInstance();
-        this.authenticationController = (AuthenticationController) core.getAuthenticationController();
+        ICore core = Core.getInstance();
+        this.authenticationController = core.getAuthenticationController();
         this.bookController = core.getBookController();
         initializeView();
     }

@@ -8,6 +8,9 @@ public abstract class ICore {
     }
 
     public abstract IUIController getUIController();
-    public abstract IAuthenticationController getAuthenticationController();
+    public abstract <T> IAuthenticationController<T> getAuthenticationController();
     public abstract IPluginController getPluginController();
+    public abstract <T> IUserController<T> getUserController();
+    public abstract <T> IBookController<T> getBookController();
+    public abstract <L, U, B> ILoanController<L, U, B> getLoanController();
 }

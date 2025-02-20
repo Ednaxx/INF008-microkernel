@@ -6,6 +6,8 @@ import br.edu.ifba.inf008.shell.controllers.PluginController;
 import br.edu.ifba.inf008.shell.controllers.UIController;
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
+import br.edu.ifba.inf008.shell.models.BookModel;
+import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.controllers.BookController;
 import br.edu.ifba.inf008.shell.controllers.LoanController;
 import br.edu.ifba.inf008.shell.util.EntitySerializer;
@@ -13,16 +15,24 @@ import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 
 public class Core extends ICore {
     private final IPluginController pluginController = new PluginController();
-    private final UserController userController = new UserController();
-    private final IAuthenticationController authenticationController = new AuthenticationController(userController);
-    private final BookController bookController = new BookController();
-    private final LoanController loanController = new LoanController();
-
-    private UserModel admin;
+    private final IUserController<UserModel> userController = new UserController();
+    private final IAuthenticationController<UserModel> authenticationController = new AuthenticationController(userController);
+    private final IBookController<BookModel> bookController = new BookController();
+    private final ILoanController<LoanModel, UserModel, BookModel> loanController = new LoanController();
 
     private Core() {
         loadData();
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveData));
+    }
+
+    private void createDefaultAdmin() {
+        UserModel defaultAdminUser = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
+        userController.addUser(defaultAdminUser);
+    }
+
+    private boolean hasAdminUser() {
+        return userController.getAll().stream()
+            .anyMatch(user -> user.getRole() == UserRoleEnum.ADMIN);
     }
 
     private void loadData() {
@@ -30,19 +40,16 @@ public class Core extends ICore {
         bookController.getAll().addAll(EntitySerializer.deserializeBooks());
         loanController.getAll().addAll(EntitySerializer.deserializeLoans());
 
-        admin = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
-        userController.addUser(admin);
+        if (!hasAdminUser()) createDefaultAdmin();
     }
 
     private void saveData() {
-        userController.deleteUser(admin.getId());
-
         EntitySerializer.serializeUsers(userController.getAll());
         EntitySerializer.serializeBooks(bookController.getAll());
         EntitySerializer.serializeLoans(loanController.getAll());
     }
 
-    public static boolean init() {
+    public static void init() {
         if (instance != null) {
             System.out.println("Fatal error: core is already initialized!");
             System.exit(-1);
@@ -50,29 +57,33 @@ public class Core extends ICore {
 
         instance = new Core();
         UIController.launch(UIController.class);
-        return true;
     }
 
     public IUIController getUIController() {
         return UIController.getInstance();
     }
 
-    public IAuthenticationController getAuthenticationController() {
-        return authenticationController;
-    }
-
     public IPluginController getPluginController() {
         return pluginController;
     }
 
-    public UserController getUserController() {
+    @SuppressWarnings("unchecked")
+    public IAuthenticationController<UserModel> getAuthenticationController() {
+        return authenticationController;
+    }
+
+    @SuppressWarnings("unchecked")
+    public IUserController<UserModel> getUserController() {
         return userController;
     }
 
-    public BookController getBookController() {
+    @SuppressWarnings("unchecked")
+    public IBookController<BookModel> getBookController() {
         return bookController;
     }
-    public LoanController getLoanController() {
+
+    @SuppressWarnings("unchecked")
+    public ILoanController<LoanModel, UserModel, BookModel> getLoanController() {
         return loanController;
     }
 }

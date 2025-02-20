@@ -1,16 +1,18 @@
 package br.edu.ifba.inf008.shell.views;
 
-import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
+import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.shell.Core;
+import br.edu.ifba.inf008.shell.models.UserModel;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class CustomerUserView extends VBox {
-    private final AuthenticationController authenticationController;
+    private final IAuthenticationController<UserModel> authenticationController;
 
-    public CustomerUserView(AuthenticationController authenticationController) {
-        this.authenticationController = authenticationController;
+    public CustomerUserView() {
+        authenticationController = Core.getInstance().getAuthenticationController();
         initializeView();
     }
 

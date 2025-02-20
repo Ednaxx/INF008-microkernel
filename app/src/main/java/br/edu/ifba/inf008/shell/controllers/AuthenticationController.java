@@ -1,13 +1,14 @@
 package br.edu.ifba.inf008.shell.controllers;
 
 import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.IUserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 
-public class AuthenticationController implements IAuthenticationController {
-    private final UserController userController;
+public class AuthenticationController implements IAuthenticationController<UserModel> {
+    private final IUserController<UserModel> userController;
     private UserModel currentUser;
 
-    public AuthenticationController(UserController userController) {
+    public AuthenticationController(IUserController<UserModel> userController) {
         this.userController = userController;
     }
 
@@ -22,12 +23,10 @@ public class AuthenticationController implements IAuthenticationController {
     }
 
     @Override
-    public boolean signOut() {
+    public void signOut() {
         if (currentUser != null) {
             currentUser = null;
-            return true;
         }
-        return false;
     }
 
     public UserModel getCurrentUser() {

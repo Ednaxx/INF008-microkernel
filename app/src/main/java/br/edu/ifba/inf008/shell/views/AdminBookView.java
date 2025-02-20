@@ -1,7 +1,8 @@
 package br.edu.ifba.inf008.shell.views;
 
+import java.util.Collections;
+import br.edu.ifba.inf008.interfaces.IBookController;
 import java.util.Date;
-import br.edu.ifba.inf008.shell.controllers.BookController;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,10 +15,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AdminBookView extends VBox {
-    private final BookController bookController;
-    private ObservableList<BookModel> books;
+    private final IBookController<BookModel> bookController;
+    private final ObservableList<BookModel> books;
 
-    public AdminBookView(BookController bookController) {
+    public AdminBookView(IBookController<BookModel> bookController) {
         this.bookController = bookController;
         this.books = FXCollections.observableArrayList(bookController.getAll());
         initializeView();
@@ -80,7 +81,7 @@ public class AdminBookView extends VBox {
         actionsColumn.setPrefWidth(200);
     
         table.setItems(books);
-        table.getColumns().addAll(titleColumn, authorColumn, isbnColumn, releaseDateColumn, actionsColumn);
+        Collections.addAll(table.getColumns(), titleColumn, authorColumn, isbnColumn, releaseDateColumn, actionsColumn);
     
         return table;
     }
