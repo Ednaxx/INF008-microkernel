@@ -7,7 +7,6 @@ public abstract class ICore {
         return instance;
     }
 
-    public abstract IUIController getUIController();
     public abstract <T> IAuthenticationController<T> getAuthenticationController();
     public abstract IPluginController getPluginController();
     public abstract <T> IUserController<T> getUserController();

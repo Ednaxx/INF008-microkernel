@@ -11,6 +11,13 @@ public class LoanModel implements Serializable {
     private final Date borrowingDate;
 
     public LoanModel(UserModel user, BookModel book) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (book == null) {
+            throw new IllegalArgumentException("Book cannot be null");
+        }
+        
         this.id = UUID.randomUUID();
         this.user = user;
         this.book = book;
@@ -30,6 +37,19 @@ public class LoanModel implements Serializable {
     }
 
     public Date getBorrowingDate() {
-        return borrowingDate;
+        return new Date(borrowingDate.getTime());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoanModel loanModel = (LoanModel) o;
+        return id.equals(loanModel.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
