@@ -3,6 +3,7 @@ package br.edu.ifba.inf008.shell;
 import br.edu.ifba.inf008.interfaces.*;
 import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
 import br.edu.ifba.inf008.shell.controllers.PluginController;
+import br.edu.ifba.inf008.shell.controllers.UIController;
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 import br.edu.ifba.inf008.shell.models.BookModel;
@@ -55,6 +56,11 @@ public class Core extends ICore {
         }
 
         instance = new Core();
+        UIController.launch(UIController.class);
+    }
+
+    public IUIController getUIController() {
+        return UIController.getInstance();
     }
 
     public IPluginController getPluginController() {
