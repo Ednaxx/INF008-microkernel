@@ -1,13 +1,12 @@
 package br.edu.ifba.inf008.shell.views;
 
+import java.time.LocalDate;
 import java.util.Collections;
-import java.time.ZoneId;
 import br.edu.ifba.inf008.interfaces.IBookController;
 import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.ILoanController;
 import br.edu.ifba.inf008.shell.Core;
 
-import java.util.Date;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
@@ -170,10 +169,7 @@ public class AdminBookView extends VBox {
         DatePicker releaseDatePicker = new DatePicker();
         releaseDatePicker.setPromptText("Release Date");
         if (book != null && book.getReleaseDate() != null) {
-            releaseDatePicker.setValue(new java.util.Date(book.getReleaseDate().getTime())
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate());
+            releaseDatePicker.setValue(book.getReleaseDate());
         }
     
         Button saveButton = new Button("Save");
@@ -207,15 +203,15 @@ public class AdminBookView extends VBox {
                 String author = authorField.getText();
                 String isbn = isbnField.getText();
                 BookGenreEnum genre = genreComboBox.getValue();
-                Date releaseDate = Date.from(releaseDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                LocalDate releaseDate = releaseDatePicker.getValue();
+
+                if (releaseDate.isAfter(LocalDate.now())) {
+                    throw new IllegalArgumentException("Release date cannot be in the future");
+                }
         
                 String cleanIsbn = isbn.replaceAll("[^0-9]", "");
                 if (cleanIsbn.length() != 13) {
                     throw new IllegalArgumentException("ISBN must be 13 digits");
-                }
-        
-                if (releaseDate.after(new Date())) {
-                    throw new IllegalArgumentException("Release date cannot be in the future");
                 }
         
                 if (book == null && !bookController.isIsbnUnique(cleanIsbn)) {

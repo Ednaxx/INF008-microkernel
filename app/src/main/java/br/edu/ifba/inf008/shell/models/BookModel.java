@@ -3,16 +3,16 @@ package br.edu.ifba.inf008.shell.models;
 import br.edu.ifba.inf008.shell.util.BookGenreEnum;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class BookModel implements Serializable {
     private String title;
     private String author;
     private String isbn;
     private BookGenreEnum genre;
-    private Date releaseDate;
+    private LocalDate releaseDate; 
 
-    public BookModel(String title, String author, String isbn, BookGenreEnum genre, Date releaseDate) {
+    public BookModel(String title, String author, String isbn, BookGenreEnum genre, LocalDate releaseDate) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
@@ -52,11 +52,11 @@ public class BookModel implements Serializable {
         this.genre = genre;
     }
 
-    public Date getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 

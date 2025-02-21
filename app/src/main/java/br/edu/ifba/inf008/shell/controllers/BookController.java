@@ -3,8 +3,7 @@ package br.edu.ifba.inf008.shell.controllers;
 import br.edu.ifba.inf008.interfaces.IBookController;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.util.BookGenreEnum;
-import java.util.Date;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
     }
 
     @Override
-    public void addBook(String isbn, String title, String author, Date releaseDate, BookGenreEnum genre) {
+    public void addBook(String isbn, String title, String author, LocalDate releaseDate, BookGenreEnum genre) {
         String cleanIsbn = isbn.replaceAll("[^0-9]", "");
         simpleBookValidation(cleanIsbn, title, author, releaseDate, genre);
 
@@ -60,7 +59,7 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
     }
 
     @Override
-    public void updateBook(String isbn, String newTitle, String newAuthor, Date newReleaseDate, BookGenreEnum newGenre) {
+    public void updateBook(String isbn, String newTitle, String newAuthor, LocalDate newReleaseDate, BookGenreEnum newGenre) {
         simpleBookValidation(isbn, newTitle, newAuthor, newReleaseDate, newGenre);
 
         BookModel existingBook = getByISBN(isbn);
@@ -101,7 +100,7 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
         books.removeIf(book -> book.getIsbn().equals(isbn));
     }
 
-    private void simpleBookValidation(String isbn, String title, String author, Date releaseDate, BookGenreEnum genre) {
+    private void simpleBookValidation(String isbn, String title, String author, LocalDate releaseDate, BookGenreEnum genre) {
         if (isbn == null || isbn.trim().isEmpty()) {
             throw new IllegalArgumentException("ISBN cannot be null or empty");
         }
@@ -118,7 +117,7 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
             throw new IllegalArgumentException("Genre cannot be null");
         }
 
-        if (releaseDate.after(new Date())) {
+        if (releaseDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Release date cannot be in the future");
         }
 
