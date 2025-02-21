@@ -77,14 +77,28 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
         if (book == null) {
             throw new IllegalArgumentException("Book cannot be null");
         }
-
-        simpleBookValidation(book.getIsbn(), book.getTitle(), book.getAuthor(), book.getReleaseDate(), book.getGenre());
-
+    
+        if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        if (book.getAuthor() == null || book.getAuthor().trim().isEmpty()) {
+            throw new IllegalArgumentException("Author cannot be null or empty");
+        }
+        if (book.getReleaseDate() == null) {
+            throw new IllegalArgumentException("Release date cannot be null");
+        }
+        if (book.getGenre() == null) {
+            throw new IllegalArgumentException("Genre cannot be null");
+        }
+        if (book.getReleaseDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Release date cannot be in the future");
+        }
+    
         BookModel existingBook = getByISBN(isbn);
         if (existingBook == null) {
             throw new IllegalStateException("Book with ISBN " + isbn + " not found");
         }
-
+    
         existingBook.setTitle(book.getTitle().trim());
         existingBook.setAuthor(book.getAuthor().trim());
         existingBook.setGenre(book.getGenre());

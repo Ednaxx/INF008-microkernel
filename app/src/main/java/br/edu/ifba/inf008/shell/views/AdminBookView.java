@@ -190,7 +190,6 @@ public class AdminBookView extends VBox {
             try {
                 errorMessageLabel.setText("");
                 
-                // Validate required fields
                 if (titleField.getText().trim().isEmpty() ||
                     authorField.getText().trim().isEmpty() ||
                     isbnField.getText().trim().isEmpty() ||
@@ -204,21 +203,21 @@ public class AdminBookView extends VBox {
                 String isbn = isbnField.getText();
                 BookGenreEnum genre = genreComboBox.getValue();
                 LocalDate releaseDate = releaseDatePicker.getValue();
-
+        
                 if (releaseDate.isAfter(LocalDate.now())) {
                     throw new IllegalArgumentException("Release date cannot be in the future");
                 }
         
-                String cleanIsbn = isbn.replaceAll("[^0-9]", "");
-                if (cleanIsbn.length() != 13) {
-                    throw new IllegalArgumentException("ISBN must be 13 digits");
-                }
-        
-                if (book == null && !bookController.isIsbnUnique(cleanIsbn)) {
-                    throw new IllegalStateException("A book with ISBN " + cleanIsbn + " already exists");
-                }
-        
                 if (book == null) {
+                    String cleanIsbn = isbn.replaceAll("[^0-9]", "");
+                    if (cleanIsbn.length() != 13) {
+                        throw new IllegalArgumentException("ISBN must be 13 digits");
+                    }
+                    
+                    if (!bookController.isIsbnUnique(cleanIsbn)) {
+                        throw new IllegalStateException("A book with ISBN " + cleanIsbn + " already exists");
+                    }
+                    
                     BookModel newBook = new BookModel(title, author, cleanIsbn, genre, releaseDate);
                     bookController.addBook(newBook);
                     books.add(newBook);
@@ -228,7 +227,9 @@ public class AdminBookView extends VBox {
                     book.setGenre(genre);
                     book.setReleaseDate(releaseDate);
                     bookController.updateBook(book.getIsbn(), book);
-                    books.set(books.indexOf(book), book);
+                    
+                    int index = books.indexOf(book);
+                    books.set(index, book);
                 }
                 popupStage.close();
         
