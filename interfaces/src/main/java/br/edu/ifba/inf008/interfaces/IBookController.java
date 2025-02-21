@@ -8,4 +8,5 @@ public interface IBookController<T> {
     T getByISBN(String isbn);
     void updateBook(String isbn, T updatedBook);
     void deleteBook(String isbn);
+    boolean isIsbnUnique(String isbn);
 }

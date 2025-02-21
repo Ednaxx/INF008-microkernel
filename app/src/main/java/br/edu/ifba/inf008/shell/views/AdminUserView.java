@@ -73,9 +73,26 @@ public class AdminUserView extends VBox {
             {
                 editButton.setOnAction(e -> showAddUserPopup(getTableView().getItems().get(getIndex())));
                 deleteButton.setOnAction(e -> {
-                    UserModel user = getTableView().getItems().get(getIndex());
-                    userController.deleteUser(user.getId());
-                    users.remove(user);
+                    try {
+                        UserModel user = getTableView().getItems().get(getIndex());
+                        
+                        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                        confirmDialog.setTitle("Confirm Delete");
+                        confirmDialog.setHeaderText("Delete User");
+                        confirmDialog.setContentText("Are you sure you want to delete user: " + 
+                                                   user.getFirstName() + " " + user.getLastName() + "?");
+                        
+                        if (confirmDialog.showAndWait().get() == ButtonType.OK) {
+                            userController.deleteUser(user.getId());
+                            users.remove(user);
+                        }
+                    } catch (Exception ex) {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setTitle("Error");
+                        errorAlert.setHeaderText("Delete Failed");
+                        errorAlert.setContentText("Failed to delete user: " + ex.getMessage());
+                        errorAlert.showAndWait();
+                    }
                 });
             }
 
@@ -112,55 +129,92 @@ public class AdminUserView extends VBox {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle(user == null ? "Add New User" : "Edit User");
-
+    
         VBox popupVBox = new VBox();
         popupVBox.setSpacing(10);
-
+    
+        Label errorMessageLabel = new Label();
+        errorMessageLabel.setStyle("-fx-text-fill: red;");
+        errorMessageLabel.setWrapText(true);
+        errorMessageLabel.setMaxWidth(380);
+    
         TextField firstNameField = new TextField();
         firstNameField.setPromptText("First Name");
         if (user != null) firstNameField.setText(user.getFirstName());
-
+    
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Last Name");
         if (user != null) lastNameField.setText(user.getLastName());
-
+    
         TextField emailField = new TextField();
         emailField.setPromptText("Email");
         if (user != null) emailField.setText(user.getEmail());
-
+    
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Password");
-
+    
         ComboBox<UserRoleEnum> roleComboBox = new ComboBox<>(FXCollections.observableArrayList(UserRoleEnum.values()));
         roleComboBox.setPromptText("Role");
         if (user != null) roleComboBox.setValue(user.getRole());
-
+    
         Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> {
-            String firstName = firstNameField.getText();
-            String lastName = lastNameField.getText();
-            String email = emailField.getText();
-            String password = passwordField.getText();
-            UserRoleEnum role = roleComboBox.getValue();
-
-            if (user == null) {
-                UserModel newUser = new UserModel(firstName, lastName, email, password, role);
-                userController.addUser(newUser);
-                users.add(newUser);
-            } else {
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
-                user.setEmail(email);
-                user.setPassword(password);
-                user.setRole(role);
-                userController.updateUser(user.getId(), user);
-                users.set(users.indexOf(user), user);
+            try {
+                errorMessageLabel.setText("");
+    
+                if (firstNameField.getText().trim().isEmpty() ||
+                    lastNameField.getText().trim().isEmpty() ||
+                    emailField.getText().trim().isEmpty() ||
+                    (user == null && passwordField.getText().trim().isEmpty()) ||
+                    roleComboBox.getValue() == null) {
+                    throw new IllegalArgumentException("All fields are required");
+                }
+    
+                String firstName = firstNameField.getText();
+                String lastName = lastNameField.getText();
+                String email = emailField.getText();
+                String password = passwordField.getText();
+                UserRoleEnum role = roleComboBox.getValue();
+    
+                UserModel existingUser = userController.getByEmail(email);
+                if (existingUser != null && (user == null || !existingUser.getId().equals(user.getId()))) {
+                    throw new IllegalStateException("Email address is already in use");
+                }
+    
+                if (user == null) {
+                    UserModel newUser = new UserModel(firstName, lastName, email, password, role);
+                    userController.addUser(newUser);
+                    users.add(newUser);
+                } else {
+                    if (!password.trim().isEmpty()) {
+                        user.setPassword(password);
+                    }
+                    user.setFirstName(firstName);
+                    user.setLastName(lastName);
+                    user.setEmail(email);
+                    user.setRole(role);
+                    userController.updateUser(user.getId(), user);
+                    users.set(users.indexOf(user), user);
+                }
+                popupStage.close();
+    
+            } catch (IllegalArgumentException | IllegalStateException ex) {
+                errorMessageLabel.setText("Error: " + ex.getMessage());
+            } catch (Exception ex) {
+                errorMessageLabel.setText("An unexpected error occurred: " + ex.getMessage());
             }
-            popupStage.close();
         });
-
-        popupVBox.getChildren().addAll(new Label("First Name:"), firstNameField, new Label("Last Name:"), lastNameField, new Label("Email:"), emailField, new Label("Password:"), passwordField, new Label("Role:"), roleComboBox, saveButton);
-
+    
+        popupVBox.getChildren().addAll(
+            errorMessageLabel,
+            new Label("First Name:"), firstNameField,
+            new Label("Last Name:"), lastNameField,
+            new Label("Email:"), emailField,
+            new Label("Password:"), passwordField,
+            new Label("Role:"), roleComboBox,
+            saveButton
+        );
+    
         Scene popupScene = new Scene(popupVBox, 400, 500);
         popupStage.setScene(popupScene);
         popupStage.showAndWait();

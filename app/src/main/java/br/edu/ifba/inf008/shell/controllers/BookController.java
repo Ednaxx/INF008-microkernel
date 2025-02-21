@@ -51,7 +51,6 @@ public class BookController implements IBookController<BookModel> {
             throw new IllegalArgumentException("ISBN and updated book cannot be null");
         }
 
-        // If ISBN is being changed, check if new ISBN is unique
         if (!isbn.equals(updatedBook.getIsbn()) && !isIsbnUnique(updatedBook.getIsbn())) {
             throw new IllegalStateException("Cannot update: A book with ISBN " + updatedBook.getIsbn() + " already exists");
         }
