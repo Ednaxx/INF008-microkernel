@@ -3,8 +3,14 @@ package br.edu.ifba.inf008.shell.views;
 import java.util.Collections;
 import java.time.ZoneId;
 import br.edu.ifba.inf008.interfaces.IBookController;
+import br.edu.ifba.inf008.interfaces.ICore;
+import br.edu.ifba.inf008.interfaces.ILoanController;
+import br.edu.ifba.inf008.shell.Core;
+
 import java.util.Date;
 import br.edu.ifba.inf008.shell.models.BookModel;
+import br.edu.ifba.inf008.shell.models.LoanModel;
+import br.edu.ifba.inf008.shell.models.UserModel;
 import javafx.collections.FXCollections;
 import br.edu.ifba.inf008.shell.util.BookGenreEnum;
 import javafx.collections.ObservableList;
@@ -17,11 +23,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AdminBookView extends VBox {
-    private final IBookController<BookModel> bookController;
+    private final IBookController<BookModel, BookGenreEnum> bookController;
+    private final ILoanController<LoanModel, UserModel, BookModel> loanController;
     private final ObservableList<BookModel> books;
 
-    public AdminBookView(IBookController<BookModel> bookController) {
-        this.bookController = bookController;
+    public AdminBookView() {
+        ICore core = Core.getInstance();
+        bookController = core.getBookController();
+        loanController = core.getLoanController();
         this.books = FXCollections.observableArrayList(bookController.getAll());
         initializeView();
     }
@@ -70,6 +79,15 @@ public class AdminBookView extends VBox {
                 deleteButton.setOnAction(e -> {
                     try {
                         BookModel book = getTableView().getItems().get(getIndex());
+                        
+                        if (loanController.isBookBorrowed(book)) {
+                            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                            errorAlert.setTitle("Cannot Delete");
+                            errorAlert.setHeaderText("Book is Currently Borrowed");
+                            errorAlert.setContentText("This book cannot be deleted while it is borrowed.");
+                            errorAlert.showAndWait();
+                            return;
+                        }
                         
                         Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
                         confirmDialog.setTitle("Confirm Delete");
@@ -152,7 +170,8 @@ public class AdminBookView extends VBox {
         DatePicker releaseDatePicker = new DatePicker();
         releaseDatePicker.setPromptText("Release Date");
         if (book != null && book.getReleaseDate() != null) {
-            releaseDatePicker.setValue(book.getReleaseDate().toInstant()
+            releaseDatePicker.setValue(new java.util.Date(book.getReleaseDate().getTime())
+                .toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate());
         }
@@ -188,7 +207,7 @@ public class AdminBookView extends VBox {
                 String author = authorField.getText();
                 String isbn = isbnField.getText();
                 BookGenreEnum genre = genreComboBox.getValue();
-                Date releaseDate = java.sql.Date.valueOf(releaseDatePicker.getValue());
+                Date releaseDate = Date.from(releaseDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
         
                 String cleanIsbn = isbn.replaceAll("[^0-9]", "");
                 if (cleanIsbn.length() != 13) {

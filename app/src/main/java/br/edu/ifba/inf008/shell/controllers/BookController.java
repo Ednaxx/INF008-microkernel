@@ -33,6 +33,15 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
         books.add(newBook);
     }
 
+    public void addBook(BookModel book) {
+        if (book == null) {
+            throw new IllegalArgumentException("Book cannot be null");
+        }
+
+        simpleBookValidation(book.getIsbn(), book.getTitle(), book.getAuthor(), book.getReleaseDate(), book.getGenre());
+        books.add(book);
+    }
+
     @Override
     public List<BookModel> getAll() {
         return books;
@@ -63,6 +72,24 @@ public class BookController implements IBookController<BookModel, BookGenreEnum>
         existingBook.setAuthor(newAuthor.trim());
         existingBook.setGenre(newGenre);
         existingBook.setReleaseDate(newReleaseDate);
+    }
+
+    public void updateBook(String isbn, BookModel book) {
+        if (book == null) {
+            throw new IllegalArgumentException("Book cannot be null");
+        }
+
+        simpleBookValidation(book.getIsbn(), book.getTitle(), book.getAuthor(), book.getReleaseDate(), book.getGenre());
+
+        BookModel existingBook = getByISBN(isbn);
+        if (existingBook == null) {
+            throw new IllegalStateException("Book with ISBN " + isbn + " not found");
+        }
+
+        existingBook.setTitle(book.getTitle().trim());
+        existingBook.setAuthor(book.getAuthor().trim());
+        existingBook.setGenre(book.getGenre());
+        existingBook.setReleaseDate(book.getReleaseDate());
     }
 
     @Override

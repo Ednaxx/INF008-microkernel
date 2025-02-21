@@ -12,6 +12,7 @@ import br.edu.ifba.inf008.shell.Core;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
+import br.edu.ifba.inf008.shell.util.BookGenreEnum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,7 +28,7 @@ public class CustomerBookView extends VBox {
 
     public CustomerBookView() {
         ICore core = Core.getInstance();
-        IBookController<BookModel> bookController = core.getBookController();
+        IBookController<BookModel, BookGenreEnum> bookController = core.getBookController();
         this.loanController = core.getLoanController();
         IAuthenticationController<UserModel> authenticationController = core.getAuthenticationController();
         this.currentUser = authenticationController.getCurrentUser();

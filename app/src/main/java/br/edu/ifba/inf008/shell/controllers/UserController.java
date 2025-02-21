@@ -38,6 +38,24 @@ public class UserController implements IUserController<UserModel, UserRoleEnum> 
         users.add(newUser);
     }
 
+    public void addUser(UserModel user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        simpleUserValidation(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
+
+        if (user.getPassword().length() < 4) {
+            throw new IllegalArgumentException("Password must be at least 4 characters long");
+        }
+
+        if (getByEmail(user.getEmail()) != null) {
+            throw new IllegalStateException("A user with email " + user.getEmail() + " already exists");
+        }
+
+        users.add(user);
+    }
+
     @Override
     public List<UserModel> getAll() {
         return users;
@@ -94,6 +112,39 @@ public class UserController implements IUserController<UserModel, UserRoleEnum> 
         existingUser.setLastName(lastName.trim());
         existingUser.setEmail(email);
         existingUser.setRole(role);
+    }
+
+    public void updateUser(UUID id, UserModel user) {
+        if (id == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        simpleUserValidation(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
+
+        UserModel existingUser = getById(id);
+        if (existingUser == null) {
+            throw new IllegalStateException("User with ID " + id + " not found");
+        }
+
+        UserModel userWithEmail = getByEmail(user.getEmail());
+        if (userWithEmail != null && !userWithEmail.getId().equals(id)) {
+            throw new IllegalStateException("Cannot update: A user with email " + user.getEmail() + " already exists");
+        }
+
+        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+            if (user.getPassword().length() < 4) {
+                throw new IllegalArgumentException("Password must be at least 4 characters long");
+            }
+            existingUser.setPassword(user.getPassword());
+        }
+
+        existingUser.setFirstName(user.getFirstName().trim());
+        existingUser.setLastName(user.getLastName().trim());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setRole(user.getRole());
     }
 
     @Override

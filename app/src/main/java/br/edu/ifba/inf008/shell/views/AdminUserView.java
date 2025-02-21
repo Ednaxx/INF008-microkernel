@@ -18,7 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AdminUserView extends VBox {
-    private final IUserController<UserModel> userController;
+    private final IUserController<UserModel, UserRoleEnum> userController;
     private final IAuthenticationController<UserModel> authenticationController;
     private final ObservableList<UserModel> users;
 
