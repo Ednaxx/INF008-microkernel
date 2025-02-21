@@ -1,14 +1,15 @@
 package br.edu.ifba.inf008.shell.controllers;
 
+import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 import br.edu.ifba.inf008.interfaces.IAuthenticationController;
 import br.edu.ifba.inf008.interfaces.IUserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 
 public class AuthenticationController implements IAuthenticationController<UserModel> {
-    private final IUserController<UserModel> userController;
+    private final IUserController<UserModel, UserRoleEnum> userController;
     private UserModel currentUser;
 
-    public AuthenticationController(IUserController<UserModel> userController) {
+    public AuthenticationController(IUserController<UserModel, UserRoleEnum> userController) {
         this.userController = userController;
     }
 

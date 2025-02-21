@@ -21,16 +21,30 @@ public class LoanController implements ILoanController<LoanModel, UserModel, Boo
     }
 
     public LoanModel borrowBook(UserModel user, BookModel book) {
-        if (isBookBorrowed(book)) return null;
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (book == null) {
+            throw new IllegalArgumentException("Book cannot be null");
+        }
         
-        if (getUserBorrowedBooksCount(user) >= MAX_BOOKS_PER_USER) return null;
+        if (isBookBorrowed(book)) {
+            throw new IllegalStateException("Book is already borrowed");
+        }
+        
+        if (!canUserBorrowMoreBooks(user)) {
+            throw new IllegalStateException("User has reached maximum borrowed books limit");
+        }
         
         LoanModel loan = new LoanModel(user, book);
         loans.add(loan);
         return loan;
     }
-
+    
     public boolean returnBook(UUID loanId) {
+        if (loanId == null) {
+            throw new IllegalArgumentException("Loan ID cannot be null");
+        }
         return loans.removeIf(loan -> loan.getId().equals(loanId));
     }
 

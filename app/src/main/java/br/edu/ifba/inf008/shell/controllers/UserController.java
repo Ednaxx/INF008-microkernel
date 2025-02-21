@@ -2,53 +2,126 @@ package br.edu.ifba.inf008.shell.controllers;
 
 import br.edu.ifba.inf008.interfaces.IUserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
+import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
-public class UserController implements IUserController<UserModel> {
+public class UserController implements IUserController<UserModel, UserRoleEnum> {
     private final List<UserModel> users = new ArrayList<>();
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 
     public UserController() {}
 
-    public void addUser(UserModel user) {
-        users.add(user);
+    @Override
+    public void addUser(String firstName, String lastName, String email, String password, UserRoleEnum role) {
+        simpleUserValidation(firstName, lastName, email, role);
+
+        if (password.length() < 4) {
+            throw new IllegalArgumentException("Password must be at least 4 characters long");
+        }
+
+        if (getByEmail(email) != null) {
+            throw new IllegalStateException("A user with email " + email + " already exists");
+        }
+
+        UserModel newUser = new UserModel(
+            firstName.trim(),
+            lastName.trim(),
+                email,
+            password,
+            role
+        );
+        
+        users.add(newUser);
     }
 
+    @Override
     public List<UserModel> getAll() {
         return users;
     }
 
+    @Override
     public UserModel getById(UUID id) {
-        for (UserModel user : users) {
-            if (user.getId().equals(id)) {
-                return user;
-            }
+        if (id == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
         }
-        return null;
+        return users.stream()
+                   .filter(user -> user.getId().equals(id))
+                   .findFirst()
+                   .orElse(null);
     }
 
+    @Override
     public UserModel getByEmail(String email) {
-        for (UserModel user : users) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
         }
-        return null;
+        return users.stream()
+                   .filter(user -> user.getEmail().equals(email.trim()))
+                   .findFirst()
+                   .orElse(null);
     }
 
-    public void updateUser(UUID id, UserModel updatedUser) {
-        for (UserModel user : users) {
-            if (user.getId().equals(id)) {
-                user.setFirstName(updatedUser.getFirstName());
-                user.setLastName(updatedUser.getLastName());
-                user.setEmail(updatedUser.getEmail());
-            }
+    @Override
+    public void updateUser(UUID id, String firstName, String lastName, String email, String password, UserRoleEnum role) {
+        if (id == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
         }
+
+        simpleUserValidation(firstName, lastName, email, role);
+
+        UserModel existingUser = getById(id);
+        if (existingUser == null) {
+            throw new IllegalStateException("User with ID " + id + " not found");
+        }
+
+        UserModel userWithEmail = getByEmail(email);
+        if (userWithEmail != null && !userWithEmail.getId().equals(id)) {
+            throw new IllegalStateException("Cannot update: A user with email " + email + " already exists");
+        }
+
+        if (password != null && !password.trim().isEmpty()) {
+            if (password.length() < 4) {
+                throw new IllegalArgumentException("Password must be at least 4 characters long");
+            }
+            existingUser.setPassword(password);
+        }
+
+        existingUser.setFirstName(firstName.trim());
+        existingUser.setLastName(lastName.trim());
+        existingUser.setEmail(email);
+        existingUser.setRole(role);
     }
 
+    @Override
     public void deleteUser(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        
         users.removeIf(user -> user.getId().equals(id));
+    }
+
+    private void simpleUserValidation(String firstName, String lastName, String email, UserRoleEnum role) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty");
+        }
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be null or empty");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
+
+        String trimmedEmail = email.trim();
+        if (!EMAIL_PATTERN.matcher(trimmedEmail).matches()) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
     }
 }

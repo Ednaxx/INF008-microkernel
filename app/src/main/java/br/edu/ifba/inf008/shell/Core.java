@@ -10,14 +10,15 @@ import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.controllers.BookController;
 import br.edu.ifba.inf008.shell.controllers.LoanController;
+import br.edu.ifba.inf008.shell.util.BookGenreEnum;
 import br.edu.ifba.inf008.shell.util.EntitySerializer;
 import br.edu.ifba.inf008.shell.util.UserRoleEnum;
 
 public class Core extends ICore {
     private final IPluginController pluginController = new PluginController();
-    private final IUserController<UserModel> userController = new UserController();
+    private final IUserController<UserModel, UserRoleEnum> userController = new UserController();
     private final IAuthenticationController<UserModel> authenticationController = new AuthenticationController(userController);
-    private final IBookController<BookModel> bookController = new BookController();
+    private final IBookController<BookModel, BookGenreEnum> bookController = new BookController();
     private final ILoanController<LoanModel, UserModel, BookModel> loanController = new LoanController();
 
     private Core() {
@@ -26,8 +27,7 @@ public class Core extends ICore {
     }
 
     private void createDefaultAdmin() {
-        UserModel defaultAdminUser = new UserModel("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
-        userController.addUser(defaultAdminUser);
+        userController.addUser("Admin", "User", "admin@admin.com", "admin", UserRoleEnum.ADMIN);
     }
 
     private boolean hasAdminUser() {
@@ -67,23 +67,21 @@ public class Core extends ICore {
         return pluginController;
     }
 
-    @SuppressWarnings("unchecked")
-    public IAuthenticationController<UserModel> getAuthenticationController() {
-        return authenticationController;
-    }
-
-    @SuppressWarnings("unchecked")
-    public IUserController<UserModel> getUserController() {
+    public IUserController<UserModel, UserRoleEnum> getUserController() {
         return userController;
     }
 
-    @SuppressWarnings("unchecked")
-    public IBookController<BookModel> getBookController() {
+    public IBookController<BookModel, BookGenreEnum> getBookController() {
         return bookController;
     }
 
     @SuppressWarnings("unchecked")
     public ILoanController<LoanModel, UserModel, BookModel> getLoanController() {
         return loanController;
+    }
+
+    @SuppressWarnings("unchecked")
+    public IAuthenticationController<UserModel> getAuthenticationController() {
+        return authenticationController;
     }
 }

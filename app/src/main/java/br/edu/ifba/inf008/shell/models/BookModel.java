@@ -25,10 +25,7 @@ public class BookModel implements Serializable {
     }
 
     public void setTitle(String title) {
-        if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
-        }
-        this.title = title.trim();
+        this.title = title;
     }
 
     public String getAuthor() {
@@ -36,10 +33,7 @@ public class BookModel implements Serializable {
     }
 
     public void setAuthor(String author) {
-        if (author == null || author.trim().isEmpty()) {
-            throw new IllegalArgumentException("Author cannot be null or empty");
-        }
-        this.author = author.trim();
+        this.author = author;
     }
 
     public String getIsbn() {
@@ -47,15 +41,7 @@ public class BookModel implements Serializable {
     }
 
     public void setIsbn(String isbn) {
-        if (isbn == null || isbn.trim().isEmpty()) {
-            throw new IllegalArgumentException("ISBN cannot be null or empty");
-        }
-        // Basic ISBN-13 validation
-        String cleanIsbn = isbn.replaceAll("[^0-9]", "");
-        if (cleanIsbn.length() != 13) {
-            throw new IllegalArgumentException("ISBN must be 13 digits");
-        }
-        this.isbn = cleanIsbn;
+        this.isbn = isbn;
     }
 
     public BookGenreEnum getGenre() {
@@ -71,12 +57,6 @@ public class BookModel implements Serializable {
     }
 
     public void setReleaseDate(Date releaseDate) {
-        if (releaseDate == null) {
-            throw new IllegalArgumentException("Release date cannot be null");
-        }
-        if (releaseDate.after(new Date())) {
-            throw new IllegalArgumentException("Release date cannot be in the future");
-        }
         this.releaseDate = releaseDate;
     }
 

@@ -2,11 +2,13 @@ package br.edu.ifba.inf008.shell.controllers;
 
 import br.edu.ifba.inf008.interfaces.IBookController;
 import br.edu.ifba.inf008.shell.models.BookModel;
+import br.edu.ifba.inf008.shell.util.BookGenreEnum;
+import java.util.Date;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookController implements IBookController<BookModel> {
+public class BookController implements IBookController<BookModel, BookGenreEnum> {
     private final List<BookModel> books = new ArrayList<>();
 
     public BookController() {}
@@ -16,16 +18,19 @@ public class BookController implements IBookController<BookModel> {
     }
 
     @Override
-    public void addBook(BookModel book) {
-        if (book == null || book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
-            throw new IllegalArgumentException("Book and ISBN cannot be null or empty");
-        }
+    public void addBook(String isbn, String title, String author, Date releaseDate, BookGenreEnum genre) {
+        String cleanIsbn = isbn.replaceAll("[^0-9]", "");
+        simpleBookValidation(cleanIsbn, title, author, releaseDate, genre);
+
+        BookModel newBook = new BookModel(
+            title.trim(),
+            author.trim(),
+            cleanIsbn,
+            genre,
+            releaseDate
+        );
         
-        if (!isIsbnUnique(book.getIsbn())) {
-            throw new IllegalStateException("A book with ISBN " + book.getIsbn() + " already exists");
-        }
-        
-        books.add(book);
+        books.add(newBook);
     }
 
     @Override
@@ -46,25 +51,18 @@ public class BookController implements IBookController<BookModel> {
     }
 
     @Override
-    public void updateBook(String isbn, BookModel updatedBook) {
-        if (isbn == null || updatedBook == null) {
-            throw new IllegalArgumentException("ISBN and updated book cannot be null");
-        }
-
-        if (!isbn.equals(updatedBook.getIsbn()) && !isIsbnUnique(updatedBook.getIsbn())) {
-            throw new IllegalStateException("Cannot update: A book with ISBN " + updatedBook.getIsbn() + " already exists");
-        }
+    public void updateBook(String isbn, String newTitle, String newAuthor, Date newReleaseDate, BookGenreEnum newGenre) {
+        simpleBookValidation(isbn, newTitle, newAuthor, newReleaseDate, newGenre);
 
         BookModel existingBook = getByISBN(isbn);
         if (existingBook == null) {
             throw new IllegalStateException("Book with ISBN " + isbn + " not found");
         }
 
-        existingBook.setTitle(updatedBook.getTitle());
-        existingBook.setAuthor(updatedBook.getAuthor());
-        existingBook.setIsbn(updatedBook.getIsbn());
-        existingBook.setGenre(updatedBook.getGenre());
-        existingBook.setReleaseDate(updatedBook.getReleaseDate());
+        existingBook.setTitle(newTitle.trim());
+        existingBook.setAuthor(newAuthor.trim());
+        existingBook.setGenre(newGenre);
+        existingBook.setReleaseDate(newReleaseDate);
     }
 
     @Override
@@ -74,5 +72,35 @@ public class BookController implements IBookController<BookModel> {
         }
         
         books.removeIf(book -> book.getIsbn().equals(isbn));
+    }
+
+    private void simpleBookValidation(String isbn, String title, String author, Date releaseDate, BookGenreEnum genre) {
+        if (isbn == null || isbn.trim().isEmpty()) {
+            throw new IllegalArgumentException("ISBN cannot be null or empty");
+        }
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        if (author == null || author.trim().isEmpty()) {
+            throw new IllegalArgumentException("Author cannot be null or empty");
+        }
+        if (releaseDate == null) {
+            throw new IllegalArgumentException("Release date cannot be null");
+        }
+        if (genre == null) {
+            throw new IllegalArgumentException("Genre cannot be null");
+        }
+
+        if (releaseDate.after(new Date())) {
+            throw new IllegalArgumentException("Release date cannot be in the future");
+        }
+
+        if (isbn.length() != 13) {
+            throw new IllegalArgumentException("ISBN must be 13 digits");
+        }
+
+        if (!isIsbnUnique(isbn)) {
+            throw new IllegalStateException("A book with ISBN " + isbn + " already exists");
+        }
     }
 }
