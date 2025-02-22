@@ -12,6 +12,7 @@
         <module>interfaces</module>
         <module>app</module>
         <module>plugins/borrowed-books-summary</module>
+        <module>plugins/late-return-fee</module>
     </modules>
 
     <properties>

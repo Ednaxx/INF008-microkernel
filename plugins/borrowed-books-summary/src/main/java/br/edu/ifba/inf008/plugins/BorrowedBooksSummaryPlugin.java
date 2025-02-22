@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 public class BorrowedBooksSummaryPlugin implements IPlugin {
     public boolean init() {
         try {
-            System.out.println("BorrowedBooksSummaryPlugin: Loading plugin...");
+            System.out.println("BorrowedBooksSummaryPlugin: Starting plugin...");
             ICore core = ICore.getInstance();
 
             if (core == null) {
