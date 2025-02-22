@@ -1,6 +1,11 @@
 # Microkernel Library App
 ## Second project for IFBA's INF008 OOP class. 
 
+- Customer/Admin authentication;
+- Admin side Book and User CRUD operations;
+- User side book borrowing and returning;
+- Plugin support (refer to plugin development below).
+
 ## Setup and execution
 
 ### Build the project
