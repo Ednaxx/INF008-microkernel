@@ -2,11 +2,11 @@ package br.edu.ifba.inf008.shell.views;
 
 import java.util.Collections;
 import br.edu.ifba.inf008.interfaces.ICore;
-import br.edu.ifba.inf008.interfaces.IUserController;
-import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.controllers.IUserController;
+import br.edu.ifba.inf008.interfaces.controllers.IAuthenticationController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 import br.edu.ifba.inf008.shell.Core;
-import br.edu.ifba.inf008.shell.util.UserRoleEnum;
+import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.property.SimpleStringProperty;

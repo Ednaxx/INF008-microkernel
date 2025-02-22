@@ -1,6 +1,6 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.interfaces.ILoanController;
+import br.edu.ifba.inf008.interfaces.controllers.ILoanController;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;

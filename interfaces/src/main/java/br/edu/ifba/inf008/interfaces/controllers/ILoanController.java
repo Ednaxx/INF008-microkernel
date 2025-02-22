@@ -1,4 +1,4 @@
-package br.edu.ifba.inf008.interfaces;
+package br.edu.ifba.inf008.interfaces.controllers;
 
 import java.util.List;
 import java.util.UUID;

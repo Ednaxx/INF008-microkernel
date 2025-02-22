@@ -1,4 +1,4 @@
-package br.edu.ifba.inf008.interfaces;
+package br.edu.ifba.inf008.interfaces.controllers;
 
 import java.time.LocalDate;
 import java.util.List;

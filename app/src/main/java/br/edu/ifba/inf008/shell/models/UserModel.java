@@ -3,9 +3,10 @@ package br.edu.ifba.inf008.shell.models;
 import java.io.Serializable;
 import java.util.UUID;
 
-import br.edu.ifba.inf008.shell.util.UserRoleEnum;
+import br.edu.ifba.inf008.interfaces.models.IUserModel;
+import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
 
-public class UserModel implements Serializable {
+public class UserModel implements IUserModel, Serializable {
     private final UUID id;
     private String firstName;
     private String lastName;

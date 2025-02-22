@@ -1,11 +1,12 @@
 package br.edu.ifba.inf008.shell.models;
 
-import br.edu.ifba.inf008.shell.util.BookGenreEnum;
+import br.edu.ifba.inf008.interfaces.models.IBookModel;
+import br.edu.ifba.inf008.interfaces.models.BookGenreEnum;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class BookModel implements Serializable {
+public class BookModel implements IBookModel, Serializable {
     private String title;
     private String author;
     private String isbn;

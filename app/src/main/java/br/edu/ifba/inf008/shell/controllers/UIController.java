@@ -1,6 +1,6 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.interfaces.IUIController;
+import br.edu.ifba.inf008.interfaces.controllers.IUIController;
 import br.edu.ifba.inf008.shell.views.AuthenticationView;
 import javafx.application.Application;
 import javafx.scene.control.MenuBar;

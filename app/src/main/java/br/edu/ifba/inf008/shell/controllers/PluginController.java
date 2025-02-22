@@ -1,7 +1,7 @@
 package br.edu.ifba.inf008.shell.controllers;
 
 import br.edu.ifba.inf008.App;
-import br.edu.ifba.inf008.interfaces.IPluginController;
+import br.edu.ifba.inf008.interfaces.controllers.IPluginController;
 import br.edu.ifba.inf008.interfaces.IPlugin;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class PluginController implements IPluginController {
             URLClassLoader ulc = new URLClassLoader(jars, App.class.getClassLoader());
             for (i = 0; i < plugins.length; i++) {
                 String pluginName = plugins[i].split("\\.")[0];
-                IPlugin plugin = (IPlugin) Class.forName("br.edu.ifba.inf008.plugins." + pluginName, true, ulc).newInstance();
+                IPlugin plugin = (IPlugin) Class.forName("br.edu.ifba.inf008.plugins." + pluginName, true, ulc).getDeclaredConstructor().newInstance();
                 plugin.init();
             }
 

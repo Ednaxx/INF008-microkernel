@@ -1,9 +1,9 @@
 package br.edu.ifba.inf008.shell.views;
 
-import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.controllers.IAuthenticationController;
 import br.edu.ifba.inf008.shell.Core;
 import br.edu.ifba.inf008.shell.models.UserModel;
-import br.edu.ifba.inf008.shell.util.UserRoleEnum;
+import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
 import javafx.scene.layout.VBox;
 
 public class UserView extends VBox {

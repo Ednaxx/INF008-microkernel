@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class LoanModel implements Serializable {
+import br.edu.ifba.inf008.interfaces.models.ILoanModel;
+
+public class LoanModel implements ILoanModel, Serializable {
     private final UUID id;
     private final UserModel user;
     private final BookModel book;

@@ -1,8 +1,8 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.interfaces.IUserController;
+import br.edu.ifba.inf008.interfaces.controllers.IUserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
-import br.edu.ifba.inf008.shell.util.UserRoleEnum;
+import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
 
 import java.util.ArrayList;
 import java.util.List;

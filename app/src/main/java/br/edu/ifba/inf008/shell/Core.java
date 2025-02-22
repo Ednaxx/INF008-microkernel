@@ -1,6 +1,7 @@
 package br.edu.ifba.inf008.shell;
 
 import br.edu.ifba.inf008.interfaces.*;
+import br.edu.ifba.inf008.interfaces.controllers.*;
 import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
 import br.edu.ifba.inf008.shell.controllers.PluginController;
 import br.edu.ifba.inf008.shell.controllers.UIController;
@@ -10,9 +11,9 @@ import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.controllers.BookController;
 import br.edu.ifba.inf008.shell.controllers.LoanController;
-import br.edu.ifba.inf008.shell.util.BookGenreEnum;
+import br.edu.ifba.inf008.interfaces.models.BookGenreEnum;
 import br.edu.ifba.inf008.shell.util.EntitySerializer;
-import br.edu.ifba.inf008.shell.util.UserRoleEnum;
+import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
 
 public class Core extends ICore {
     private final IPluginController pluginController = new PluginController();

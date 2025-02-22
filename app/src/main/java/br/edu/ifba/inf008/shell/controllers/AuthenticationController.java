@@ -1,8 +1,8 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.shell.util.UserRoleEnum;
-import br.edu.ifba.inf008.interfaces.IAuthenticationController;
-import br.edu.ifba.inf008.interfaces.IUserController;
+import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
+import br.edu.ifba.inf008.interfaces.controllers.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.controllers.IUserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 
 public class AuthenticationController implements IAuthenticationController<UserModel> {

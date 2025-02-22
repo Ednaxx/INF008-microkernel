@@ -1,7 +1,7 @@
 package br.edu.ifba.inf008.shell.views;
 
 import br.edu.ifba.inf008.shell.Core;
-import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.controllers.IAuthenticationController;
 import br.edu.ifba.inf008.shell.models.UserModel;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

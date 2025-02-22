@@ -1,8 +1,8 @@
 package br.edu.ifba.inf008.shell.controllers;
 
-import br.edu.ifba.inf008.interfaces.IBookController;
+import br.edu.ifba.inf008.interfaces.controllers.IBookController;
 import br.edu.ifba.inf008.shell.models.BookModel;
-import br.edu.ifba.inf008.shell.util.BookGenreEnum;
+import br.edu.ifba.inf008.interfaces.models.BookGenreEnum;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

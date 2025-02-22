@@ -5,14 +5,14 @@ import java.time.ZoneId;
 
 import java.util.Collections;
 import br.edu.ifba.inf008.interfaces.ICore;
-import br.edu.ifba.inf008.interfaces.IBookController;
-import br.edu.ifba.inf008.interfaces.ILoanController;
-import br.edu.ifba.inf008.interfaces.IAuthenticationController;
+import br.edu.ifba.inf008.interfaces.controllers.IBookController;
+import br.edu.ifba.inf008.interfaces.controllers.ILoanController;
+import br.edu.ifba.inf008.interfaces.controllers.IAuthenticationController;
 import br.edu.ifba.inf008.shell.Core;
 import br.edu.ifba.inf008.shell.models.BookModel;
 import br.edu.ifba.inf008.shell.models.LoanModel;
 import br.edu.ifba.inf008.shell.models.UserModel;
-import br.edu.ifba.inf008.shell.util.BookGenreEnum;
+import br.edu.ifba.inf008.interfaces.models.BookGenreEnum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.property.SimpleStringProperty;
