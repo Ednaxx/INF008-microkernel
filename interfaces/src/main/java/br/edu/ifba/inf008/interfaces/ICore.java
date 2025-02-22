@@ -10,7 +10,6 @@ public abstract class ICore {
     }
 
     public abstract IUIController getUIController();
-    public abstract IPluginController getPluginController();
     public abstract <T> IAuthenticationController<T> getAuthenticationController();
     public abstract <T, R> IUserController<T, R> getUserController();
     public abstract <T, G> IBookController<T, G> getBookController();

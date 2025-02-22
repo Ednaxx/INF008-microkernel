@@ -3,7 +3,6 @@ package br.edu.ifba.inf008.shell;
 import br.edu.ifba.inf008.interfaces.*;
 import br.edu.ifba.inf008.interfaces.controllers.*;
 import br.edu.ifba.inf008.shell.controllers.AuthenticationController;
-import br.edu.ifba.inf008.shell.controllers.PluginController;
 import br.edu.ifba.inf008.shell.controllers.UIController;
 import br.edu.ifba.inf008.shell.controllers.UserController;
 import br.edu.ifba.inf008.shell.models.UserModel;
@@ -16,7 +15,6 @@ import br.edu.ifba.inf008.shell.util.EntitySerializer;
 import br.edu.ifba.inf008.interfaces.models.UserRoleEnum;
 
 public class Core extends ICore {
-    private final IPluginController pluginController = new PluginController();
     private final IUserController<UserModel, UserRoleEnum> userController = new UserController();
     private final IAuthenticationController<UserModel> authenticationController = new AuthenticationController(userController);
     private final IBookController<BookModel, BookGenreEnum> bookController = new BookController();
@@ -64,14 +62,12 @@ public class Core extends ICore {
         return UIController.getInstance();
     }
 
-    public IPluginController getPluginController() {
-        return pluginController;
-    }
-
+    @SuppressWarnings("unchecked")
     public IUserController<UserModel, UserRoleEnum> getUserController() {
         return userController;
     }
 
+    @SuppressWarnings("unchecked")
     public IBookController<BookModel, BookGenreEnum> getBookController() {
         return bookController;
     }

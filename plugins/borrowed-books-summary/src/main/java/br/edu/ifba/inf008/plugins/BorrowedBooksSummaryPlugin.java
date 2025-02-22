@@ -12,17 +12,17 @@ import javafx.scene.layout.VBox;
 public class BorrowedBooksSummaryPlugin implements IPlugin {
     public boolean init() {
         try {
-            ICore core = ICore.getInstance();
-            
             System.out.println("BorrowedBooksSummaryPlugin: Loading plugin...");
+            ICore core = ICore.getInstance();
+
+            if (core == null) {
+                System.err.println("BorrowedBooksSummaryPlugin: Core instance is null");
+                return false;
+            }
+            
 
             IUIController uiController = core.getUIController();
-            IAuthenticationController<IUserModel> authController = core.getAuthenticationController();
             ILoanController<ILoanModel, IUserModel, IBookModel> loanController = core.getLoanController();
-
-            if (authController.getCurrentUser().getRole() != UserRoleEnum.ADMIN) {
-                return true;
-            }
 
             TableView<ILoanModel> tableView = new TableView<>();
 

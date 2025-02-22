@@ -12,11 +12,24 @@ import javafx.scene.control.Tab;
 import javafx.scene.Node;
 
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UIController extends Application implements IUIController {
     private MenuBar menuBar;
     private TabPane tabPane;
     private static UIController uiController;
+    private final List<PendingTab> pendingTabs = new ArrayList<>();
+
+    private static class PendingTab {
+        String text;
+        Node content;
+
+        PendingTab(String text, Node content) {
+            this.text = text;
+            this.content = content;
+        }
+    }
 
     public UIController() {}
 
@@ -32,6 +45,15 @@ public class UIController extends Application implements IUIController {
     @Override
     public void start(Stage primaryStage) {
         new AuthenticationView(primaryStage).show();
+        PluginController.init();
+    }
+
+    public void setTabPane(TabPane tabPane) {
+        this.tabPane = tabPane;
+        for (PendingTab pendingTab : pendingTabs) {
+            createTab(pendingTab.text, pendingTab.content);
+        }
+        pendingTabs.clear();
     }
 
     public MenuItem createMenuItem(String menuText, String menuItemText) {
@@ -54,9 +76,15 @@ public class UIController extends Application implements IUIController {
     }
 
     public boolean createTab(String tabText, Node contents) {
+        if (tabPane == null) {
+            pendingTabs.add(new PendingTab(tabText, contents));
+            return true;
+        }
+
         Tab tab = new Tab();
         tab.setText(tabText);
         tab.setContent(contents);
+        tab.setClosable(false);
         tabPane.getTabs().add(tab);
 
         return true;
